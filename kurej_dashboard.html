@@ -1713,6 +1713,34 @@ svg{display:block;}
             </div>
           </div>
         </div>
+
+        <!-- Multi-Device Sync -->
+        <div class="card" style="grid-column:1/-1;margin-top:20px;">
+          <div class="card-inner">
+            <div class="system-section-title">🔄 Multi-Device Sync (GitHub Gist)</div>
+            <div class="notice" style="margin-bottom:16px;">Sync your trade data across all devices using a private GitHub Gist. Enter your token on each device once — data saves automatically.</div>
+            <div style="display:flex;flex-direction:column;gap:12px;max-width:520px;">
+              <div>
+                <label style="font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px;">GitHub Token (gist scope)</label>
+                <div style="display:flex;gap:8px;">
+                  <input type="password" id="gist-token-input" placeholder="ghp_xxxxxxxxxxxx"
+                    style="flex:1;background:var(--glass2);border:1px solid var(--border2);border-radius:10px;padding:10px 14px;color:var(--text);font-size:13px;font-family:var(--sans);outline:none;"
+                    value="" />
+                  <button class="btn btn-primary" onclick="saveGistToken()" style="white-space:nowrap;">💾 Save Token</button>
+                </div>
+              </div>
+              <div id="gist-status" style="font-size:12px;color:var(--text3);"></div>
+              <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                <button class="btn btn-ghost btn-sm" onclick="syncNow()">☁️ Sync Now</button>
+                <button class="btn btn-ghost btn-sm" onclick="removeGistToken()" style="color:var(--red);border-color:var(--red);">🗑 Remove Token</button>
+              </div>
+              <div class="notice" style="font-size:11px;margin-top:4px;">
+                <b>How to get a token:</b> GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token → check <b>gist</b> only → Generate.
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -1962,7 +1990,7 @@ const STORAGE_KEY = 'kurej_trading_v1';
 // 1. Create a PAT at: GitHub → Settings → Developer Settings →
 //    Personal Access Tokens → Tokens (classic) → check "gist" scope
 // 2. Paste it below. Leave empty to use localStorage only.
-const GIST_TOKEN    = '';           // ← paste your GitHub PAT here
+const GIST_TOKEN    = localStorage.getItem('kurej_gist_token') || '';  // set via Sync Settings UI
 const GIST_FILENAME = 'kurej_trading.json';
 let   gistId        = localStorage.getItem('kurej_gist_id') || null;
 
@@ -2014,6 +2042,43 @@ async function loadState(){
     const s = localStorage.getItem(STORAGE_KEY);
     if(s) state = {...state, ...JSON.parse(s)};
   }catch(e){}
+}
+
+// ── Gist Sync UI Functions ──────────────────────────────────
+function saveGistToken(){
+  const t = document.getElementById('gist-token-input').value.trim();
+  if(!t){ alert('Please enter a token.'); return; }
+  localStorage.setItem('kurej_gist_token', t);
+  document.getElementById('gist-status').innerHTML = '✅ Token saved. Syncing now…';
+  document.getElementById('gist-token-input').value = '';
+  // Reload page so GIST_TOKEN picks up new value
+  setTimeout(()=>location.reload(), 800);
+}
+
+function removeGistToken(){
+  if(!confirm('Remove sync token? Data stays local only.')) return;
+  localStorage.removeItem('kurej_gist_token');
+  localStorage.removeItem('kurej_gist_id');
+  document.getElementById('gist-status').innerHTML = '🗑 Token removed. Using local storage only.';
+}
+
+async function syncNow(){
+  const token = localStorage.getItem('kurej_gist_token');
+  if(!token){ alert('No token saved. Enter your GitHub token above first.'); return; }
+  document.getElementById('gist-status').innerHTML = '⏳ Syncing…';
+  await saveState();
+  document.getElementById('gist-status').innerHTML = '✅ Synced at ' + new Date().toLocaleTimeString();
+}
+
+function initGistUI(){
+  const token = localStorage.getItem('kurej_gist_token');
+  const statusEl = document.getElementById('gist-status');
+  if(!statusEl) return;
+  if(token){
+    statusEl.innerHTML = '✅ Token active — data syncs automatically on each save.';
+  } else {
+    statusEl.innerHTML = '⚠️ No token set — data is local only.';
+  }
 }
 
 // No demo data — real manual entry only
@@ -4984,7 +5049,7 @@ function authGrantAccess(email){
     });
   }
 
-  setTimeout(()=>{ screen.style.display='none'; }, 500);
+  setTimeout(()=>{ screen.style.display='none'; initGistUI(); }, 500);
 
   const topbarRight = document.querySelector('.topbar-right');
   if(topbarRight && !document.getElementById('logout-btn')){
