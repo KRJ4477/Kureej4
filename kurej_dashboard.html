@@ -5,10 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Kurej — Trading Performance Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
-<script src="https://accounts.google.com/gsi/client" async defer></script>
 <style>
 :root {
-  color-scheme: dark;
   --bg: #070b14;
   --bg2: #0a0e1a;
   --bg3: #0d1220;
@@ -148,11 +146,11 @@ body::after{
   border:none;cursor:pointer;font-family:var(--sans);
   font-size:13px;font-weight:600;transition:all .2s;
 }
-.btn-primary{background:#fff;color:#333;}
+.btn-primary{background:#fff;color:#000;}
 .btn-primary:hover{background:#e8edf5;}
 .btn-ghost{background:var(--glass2);color:var(--text);border:1px solid var(--border);}
 .btn-ghost:hover{background:var(--glass3);}
-.btn-green{background:var(--green);color:#333;}
+.btn-green{background:var(--green);color:#000;}
 .btn-green:hover{background:var(--green2);}
 .btn-red{background:var(--red);color:#fff;}
 .btn-danger{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,77,109,0.3);}
@@ -211,17 +209,7 @@ input[type=text],input[type=date],input[type=number],select,textarea{
 input[type=text]:focus,input[type=date]:focus,input[type=number]:focus,select:focus,textarea:focus{
   border-color:var(--blue);
 }
-input[type=date]::-webkit-calendar-picker-indicator{
-  filter:invert(1) brightness(0.7);
-  cursor:pointer;
-}
-input[type=number]::-webkit-inner-spin-button,
-input[type=number]::-webkit-outer-spin-button{
-  filter:invert(1) brightness(0.6);
-}
-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239ba8bb'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;color-scheme:dark;}
-select option{background:#0d1220;color:#e8edf5;}
-select option:hover,select option:focus,select option:checked{background:#1a2540;color:#e8edf5;}
+select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%239ba8bb'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px;}
 textarea{resize:vertical;min-height:80px;}
 
 /* KPI Row */
@@ -692,164 +680,27 @@ svg{display:block;}
 .smart-field{display:flex;flex-direction:column;gap:4px;}
 .smart-label{font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.05em;}
 .smart-val{color:var(--text2);line-height:1.5;}
-
-/* ── Auth Screen ── */
-@keyframes authIn{from{opacity:0;transform:translateY(28px) scale(.97);}to{opacity:1;transform:none;}}
-
-
-/* ── Time-Based Analysis ── */
-.tba-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 10px;
-  margin-bottom: 24px;
-}
-.tba-stat {
-  background: var(--glass2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius2);
-  padding: 12px 14px;
-}
-.tba-stat-label { font-size: 11px; color: var(--text3); font-weight: 600; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 4px; }
-.tba-stat-val   { font-family: var(--mono); font-size: 20px; font-weight: 700; }
-
-.tba-chart-wrap { width: 100%; overflow-x: auto; }
-.tba-bar-section { margin-bottom: 28px; }
-.tba-bar-section-title {
-  font-size: 12px; font-weight: 700; color: var(--text3);
-  text-transform: uppercase; letter-spacing: .06em;
-  margin-bottom: 12px;
-}
-.tba-row {
-  display: flex; align-items: center; gap: 10px;
-  margin-bottom: 6px; min-height: 28px;
-}
-.tba-row-label {
-  font-family: var(--mono); font-size: 12px; color: var(--text2);
-  width: 72px; text-align: right; flex-shrink: 0; white-space: nowrap;
-}
-.tba-row-label-wide {
-  width: 100px;
-}
-.tba-track {
-  flex: 1; position: relative; height: 26px;
-  background: rgba(255,255,255,0.03); border-radius: 5px; overflow: visible;
-  min-width: 0;
-}
-.tba-bar-pos {
-  position: absolute; top: 3px; height: 20px; border-radius: 4px;
-  background: linear-gradient(90deg, var(--green), #00ff9f88);
-  transition: width .6s cubic-bezier(.4,0,.2,1);
-  min-width: 2px;
-}
-.tba-bar-neg {
-  position: absolute; top: 3px; height: 20px; border-radius: 4px;
-  background: linear-gradient(90deg, var(--red), #ff4d6d88);
-  transition: width .6s cubic-bezier(.4,0,.2,1);
-  min-width: 2px;
-  right: 50%;
-}
-.tba-center-line {
-  position: absolute; left: 50%; top: 0; bottom: 0;
-  width: 1px; background: rgba(255,255,255,0.1);
-}
-.tba-row-meta {
-  display: flex; gap: 8px; align-items: center;
-  width: 160px; flex-shrink: 0; font-size: 11px; font-family: var(--mono);
-}
-.tba-pnl-val { font-weight: 700; font-size: 12px; width: 68px; text-align: right; }
-.tba-wr-val  { color: var(--text3); width: 38px; }
-.tba-cnt-val { color: var(--text3); width: 28px; text-align: right; }
-
-/* Heatmap grid */
-.tba-heatmap { display: grid; gap: 4px; }
-.tba-hm-cell {
-  height: 32px; border-radius: 5px;
-  display: flex; align-items: center; justify-content: center;
-  font-family: var(--mono); font-size: 10px; font-weight: 600;
-  cursor: default; transition: transform .15s;
-  position: relative;
-}
-.tba-hm-cell:hover { transform: scale(1.08); z-index: 2; }
-.tba-hm-label {
-  font-size: 10px; color: var(--text3); font-family: var(--mono);
-  display: flex; align-items: center; justify-content: center;
-}
-.tba-empty-state {
-  text-align: center; padding: 48px 20px; color: var(--text3);
-}
-.tba-empty-state .tba-empty-icon { font-size: 40px; margin-bottom: 12px; }
-.tba-empty-state .tba-empty-msg  { font-size: 14px; }
-
-/* ── Study Page ── */
-.study-entry-card {
-  background: var(--glass);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  margin-bottom: 16px;
-  overflow: hidden;
-  position: relative;
-}
-.study-entry-card::before {
-  content: '';position:absolute;top:0;left:0;right:0;height:1px;
-  background: linear-gradient(90deg,transparent,rgba(255,255,255,0.13),transparent);
-}
-.study-entry-header {
-  display: flex;align-items: center;gap: 14px;
-  padding: 16px 20px;cursor: pointer;
-  transition: background .15s;
-}
-.study-entry-header:hover { background: var(--glass2); }
-.study-entry-date {
-  font-family: var(--mono);font-size: 12px;color: var(--text3);
-  white-space: nowrap;min-width: 88px;
-}
-.study-entry-session-badge {
-  display: inline-flex;align-items:center;
-  padding: 3px 10px;border-radius: 20px;font-size: 11px;font-weight: 700;
-  background: var(--blue-dim);color: var(--blue);border: 1px solid rgba(77,159,255,0.25);
-  white-space: nowrap;
-}
-.study-entry-title {
-  flex: 1;font-size: 14px;font-weight: 600;color: var(--text);
-  white-space: nowrap;overflow: hidden;text-overflow: ellipsis;
-}
-.study-entry-actions { display: flex;gap: 8px;flex-shrink: 0; }
-.study-entry-body {
-  display: none;padding: 0 20px 20px;
-}
-.study-entry-body.open { display: block; }
-.study-body-grid {
-  display: grid;grid-template-columns: 1fr 1fr;gap: 16px;
-}
-@media(max-width:760px){.study-body-grid{grid-template-columns:1fr;}}
-.study-field-label {
-  font-size: 11px;font-weight: 700;color: var(--text3);
-  text-transform: uppercase;letter-spacing: .06em;margin-bottom: 6px;
-}
-.study-field-val {
-  font-size: 13px;color: var(--text2);line-height: 1.7;
-  white-space: pre-wrap;word-break: break-word;
-}
-.study-screenshot-wrap {
-  grid-column: 1 / -1;
-}
-.study-screenshot-img {
-  max-width: 100%;border-radius: 10px;
-  border: 1px solid var(--border2);cursor: zoom-in;
-  transition: opacity .2s,transform .2s;margin-top:6px;
-  display: block;
-}
-.study-screenshot-img:hover { opacity: .85;transform: scale(1.01); }
-/* Study form panel – wide */
-.study-panel-wide {
-  width: min(900px, 100vw) !important;
-}
-
-
 </style>
 </head>
 <body>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<!-- Panel overlay -->
+<div class="panel-overlay" id="panel-overlay" onclick="closePanel()"></div>
+
+<!-- Side panel (Log Trade / Edit) -->
+<div class="side-panel" id="side-panel">
+  <div class="panel-header">
+    <span class="panel-title" id="panel-title">Log Trade</span>
+    <button class="panel-close" onclick="closePanel()">×</button>
+  </div>
+  <div class="panel-body" id="panel-body"><!-- filled dynamically --></div>
+</div>
+
 <div class="app">
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
@@ -875,12 +726,6 @@ svg{display:block;}
       </div>
       <div class="nav-item" data-page="goals" onclick="navTo('goals',this)">
         <span class="nav-icon">🎯</span><span class="nav-label">Goals</span>
-      </div>
-      <div class="nav-item" data-page="study" onclick="navTo('study',this)">
-        <span class="nav-icon">📚</span><span class="nav-label">Study</span>
-      </div>
-      <div class="nav-item" data-page="calc" onclick="navTo('calc',this)">
-        <span class="nav-icon">🧮</span><span class="nav-label">Position Calc</span>
       </div>
       <div class="nav-item" data-page="system" onclick="navTo('system',this)">
         <span class="nav-icon">⚙️</span><span class="nav-label">System</span>
@@ -1040,23 +885,13 @@ svg{display:block;}
         </div>
       </div>
 
-      <!-- Emotional State + Streak & Drawdown side by side -->
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;" class="anim-6">
-        <div class="card" id="emotional-avg-card">
-          <div class="card-inner" style="padding:14px 18px;">
-            <div class="section-header" style="margin-bottom:10px;">
-              <span class="section-title" style="font-size:14px;">🧘 Emotional State Analysis</span>
-            </div>
-            <div id="emotional-avg-wrap"></div>
+      <!-- Emotional State Analysis — COMPACT -->
+      <div class="card anim-6" style="margin-bottom:24px;" id="emotional-avg-card">
+        <div class="card-inner" style="padding:14px 18px;">
+          <div class="section-header" style="margin-bottom:10px;">
+            <span class="section-title" style="font-size:14px;">🧘 Emotional State Analysis</span>
           </div>
-        </div>
-        <div class="card">
-          <div class="card-inner">
-            <div class="section-header" style="margin-bottom:14px;">
-              <span class="section-title">🔥 Streak & Drawdown</span>
-            </div>
-            <div id="streak-dd-wrap"></div>
-          </div>
+          <div id="emotional-avg-wrap"></div>
         </div>
       </div>
 
@@ -1067,64 +902,6 @@ svg{display:block;}
         </div>
         <div class="insights-grid" id="insights-grid"></div>
       </div>
-
-      <!-- Market News -->
-      <div class="card anim-7" style="margin-bottom:24px;">
-        <div class="card-inner">
-          <div class="section-header" style="margin-bottom:14px;">
-            <span class="section-title">📰 Market News</span>
-            <button class="btn btn-ghost btn-sm" onclick="loadMarketNews()" id="news-refresh-btn" style="font-size:11px;">↻ Refresh</button>
-          </div>
-          <div id="market-news-body">
-            <div style="color:var(--text3);font-size:13px;text-align:center;padding:20px 0;">Loading news…</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Daily Checklist & Score -->
-      <div class="card anim-7" style="margin-bottom:24px;">
-        <div class="card-inner">
-          <div class="section-header" style="margin-bottom:14px;">
-            <span class="section-title">📝 Daily Checklist</span>
-            <div style="display:flex;align-items:center;gap:10px;">
-              <div id="checklist-score-badge" style="display:flex;align-items:center;gap:6px;">
-                <svg width="48" height="48" viewBox="0 0 48 48" id="checklist-score-ring">
-                  <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="5"/>
-                  <circle cx="24" cy="24" r="20" fill="none" stroke="var(--blue)" stroke-width="5"
-                    stroke-dasharray="125.6" stroke-dashoffset="125.6"
-                    stroke-linecap="round" transform="rotate(-90 24 24)"
-                    id="checklist-ring-fill" style="transition:stroke-dashoffset .4s,stroke .4s;"/>
-                  <text x="24" y="28" text-anchor="middle" font-family="JetBrains Mono" font-weight="700" font-size="12" fill="var(--text)" id="checklist-ring-label">0%</text>
-                </svg>
-                <div>
-                  <div id="checklist-score-label" style="font-size:13px;font-weight:700;color:var(--text);">0 / 0</div>
-                  <div id="checklist-score-tag" style="font-size:10px;color:var(--text3);">Not started</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Date selector -->
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-            <button class="btn btn-ghost btn-sm" onclick="checklistDateShift(-1)">‹</button>
-            <input type="date" id="checklist-date" style="background:var(--glass);border:1px solid var(--border2);border-radius:8px;padding:5px 10px;color:var(--text);font-family:var(--sans);font-size:13px;" onchange="renderChecklist()">
-            <button class="btn btn-ghost btn-sm" onclick="checklistDateShift(1)">›</button>
-            <button class="btn btn-ghost btn-sm" onclick="setChecklistToday()" style="margin-left:4px;">Today</button>
-          </div>
-
-          <!-- Checklist groups -->
-          <div id="daily-checklist-body" style="display:flex;flex-direction:column;gap:16px;"></div>
-
-          <!-- Notes for the day -->
-          <div style="margin-top:16px;">
-            <div style="font-size:12px;color:var(--text3);margin-bottom:6px;font-weight:600;">Notes for this day</div>
-            <textarea id="checklist-day-notes" placeholder="Any observations, lessons, or reminders for this trading day…"
-              style="width:100%;min-height:72px;background:var(--glass);border:1px solid var(--border2);border-radius:10px;padding:10px 12px;color:var(--text);font-family:var(--sans);font-size:13px;resize:vertical;line-height:1.6;outline:none;"
-              oninput="saveChecklistDay()"></textarea>
-          </div>
-        </div>
-      </div>
-
       </div><!-- /#dash-content -->
     </div>
 
@@ -1144,29 +921,6 @@ svg{display:block;}
         <div style="font-size:16px;font-weight:600;margin-bottom:8px;">No accounts yet</div>
         <div style="font-size:13px;margin-bottom:20px;">Add your first prop firm or personal account to get started.</div>
         <button class="btn btn-primary" onclick="openAccountForm(null)">+ Add Account</button>
-      </div>
-
-      <!-- ── Time-Based Analysis ── -->
-      <div class="card" id="time-analysis-section" style="margin-top:28px;">
-        <div class="card-inner">
-          <div class="section-header" style="margin-bottom:18px;">
-            <div>
-              <span class="section-title">⏱ Time-Based Analysis</span>
-              <div style="font-size:12px;color:var(--text3);margin-top:3px;">Performance by hour and weekday</div>
-            </div>
-            <div style="display:flex;align-items:center;gap:10px;">
-              <select id="tba-acct-filter" onchange="renderTimeAnalysis()" style="font-size:12px;padding:5px 10px;min-width:140px;">
-                <option value="">All Accounts</option>
-              </select>
-            </div>
-          </div>
-          <div class="period-tabs" id="tba-tabs" style="margin-bottom:22px;">
-            <div class="period-tab active" onclick="setTbaTab('weekday',this)">By Weekday</div>
-            <div class="period-tab" onclick="setTbaTab('hour',this)">By Hour</div>
-            <div class="period-tab" onclick="setTbaTab('minute',this)">By Minute</div>
-          </div>
-          <div id="tba-content"></div>
-        </div>
       </div>
     </div>
 
@@ -1192,10 +946,7 @@ svg{display:block;}
           <div class="period-tab" onclick="setJournalPeriod('monthly',this)">Monthly</div>
           <div class="period-tab" onclick="setJournalPeriod('quarterly',this)">Quarterly</div>
         </div>
-        <div style="display:flex;gap:8px;">
-          <button class="btn btn-ghost btn-sm" onclick="openMt5Import()" style="border-color:rgba(255,209,102,0.4);color:var(--gold);">📥 Import MT5</button>
-          <button class="btn btn-primary btn-sm" onclick="openLogTrade(null)">+ Log Trade</button>
-        </div>
+        <button class="btn btn-primary btn-sm" onclick="openLogTrade(null)">+ Log Trade</button>
       </div>
 
       <!-- Period Stats Bar -->
@@ -1215,6 +966,7 @@ svg{display:block;}
           <span class="filter-label">Pair</span>
           <select id="j-filter-pair" onchange="renderJournal()">
             <option value="">All Pairs</option>
+            <option>EURUSD</option><option>GBPUSD</option><option>XAUUSD</option><option>GBPJPY</option>
           </select>
         </div>
         <div class="filter-group">
@@ -1348,42 +1100,12 @@ svg{display:block;}
           </div>
         </div>
 
-        <!-- Daily Checklist Editor -->
-        <div class="card" style="grid-column:1/-1;">
-          <div class="card-inner">
-            <div class="system-section-title">✅ Daily Checklist Editor</div>
-            <div style="font-size:12px;color:var(--text3);margin-bottom:16px;">Edit the groups and items that appear in your Pre-Market daily checklist. Changes apply immediately.</div>
-            <div id="checklist-editor-body" style="display:flex;flex-direction:column;gap:16px;"></div>
-            <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
-              <div style="font-size:12px;color:var(--text3);margin-bottom:8px;font-weight:600;">Add a new group</div>
-              <div class="add-tag-row">
-                <input type="text" id="new-cl-group" placeholder="e.g. 🎯 Focus Rules" style="flex:1;" onkeydown="if(event.key==='Enter')addChecklistGroup()">
-                <button class="btn btn-primary btn-sm" onclick="addChecklistGroup()">Add Group</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Tradeable Pairs -->
-        <div class="card" style="grid-column:1/-1;">
-          <div class="card-inner">
-            <div class="system-section-title">💱 Tradeable Pairs</div>
-            <div style="font-size:12px;color:var(--text3);margin-bottom:12px;">These pairs appear in the Trade Journal and Pre-Market plan dropdowns.</div>
-            <div class="tag-list" id="pairs-list"></div>
-            <div class="add-tag-row">
-              <input type="text" id="new-pair" placeholder="Add pair… e.g. USDJPY" style="flex:1;text-transform:uppercase;" onkeydown="if(event.key==='Enter')addPair()" oninput="this.value=this.value.toUpperCase()">
-              <button class="btn btn-primary btn-sm" onclick="addPair()">Add</button>
-            </div>
-          </div>
-        </div>
-
         <!-- Backup -->
         <div class="card" style="grid-column:1/-1;">
           <div class="card-inner">
             <div class="system-section-title">Data Management</div>
             <div class="notice" style="margin-bottom:16px;">🔒 All data is stored locally in your browser (localStorage). Export regularly to keep a backup.</div>
             <div class="backup-section">
-              <button class="btn btn-ghost" onclick="openMt5Import()" style="border-color:rgba(255,209,102,0.35);color:var(--gold);">📥 Import MT5 CSV/HTML</button>
               <button class="btn btn-primary" onclick="exportData()">⬇ Export JSON Backup</button>
               <button class="btn btn-ghost" onclick="document.getElementById('import-file').click()">⬆ Import JSON Backup</button>
               <input type="file" id="import-file" accept=".json" style="display:none" onchange="importData(event)">
@@ -1391,131 +1113,6 @@ svg{display:block;}
             </div>
           </div>
         </div>
-      </div>
-    </div>
-
-    <!-- ═══════════════════════════════════════════════
-         PAGE: Position Size Calculator
-    ═══════════════════════════════════════════════ -->
-    <div class="page" id="page-calc">
-      <div style="max-width:860px;margin:0 auto;">
-
-        <!-- Instrument Presets -->
-        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px;" id="calc-presets"></div>
-
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-
-          <!-- Inputs -->
-          <div style="display:flex;flex-direction:column;gap:16px;">
-
-            <div class="card">
-              <div class="card-inner">
-                <div class="system-section-title" style="margin-bottom:16px;">💰 Account</div>
-                <div style="display:flex;flex-direction:column;gap:12px;">
-                  <div>
-                    <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:5px;">Account Balance ($)</label>
-                    <input type="number" id="calc-balance" placeholder="e.g. 10000" min="0" step="1" oninput="calcPosition()" style="width:100%;">
-                  </div>
-                  <div>
-                    <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:5px;">Risk per Trade (%)</label>
-                    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px;" id="calc-risk-presets">
-                      <button class="btn btn-ghost btn-sm" onclick="setRiskPct(0.5)">0.5%</button>
-                      <button class="btn btn-ghost btn-sm" onclick="setRiskPct(1)">1%</button>
-                      <button class="btn btn-ghost btn-sm" onclick="setRiskPct(1.5)">1.5%</button>
-                      <button class="btn btn-ghost btn-sm" onclick="setRiskPct(2)">2%</button>
-                    </div>
-                    <input type="number" id="calc-risk-pct" placeholder="e.g. 1" min="0.01" max="100" step="0.1" oninput="calcPosition()" style="width:100%;">
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="card">
-              <div class="card-inner">
-                <div class="system-section-title" style="margin-bottom:16px;">📍 Trade Setup</div>
-                <div style="display:flex;flex-direction:column;gap:12px;">
-                  <div>
-                    <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:5px;">Instrument</label>
-                    <select id="calc-instrument" onchange="onCalcInstrumentChange()" style="width:100%;">
-                      <option value="forex">Forex (Standard Lot)</option>
-                      <option value="xauusd">XAUUSD (Gold)</option>
-                      <option value="nas100">NAS100 / US100</option>
-                      <option value="us30">US30 / Dow Jones</option>
-                      <option value="us500">S&P 500</option>
-                      <option value="custom">Custom (pip value)</option>
-                    </select>
-                  </div>
-                  <div id="calc-pip-row" style="display:none;">
-                    <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:5px;">Pip Value per Lot ($)</label>
-                    <input type="number" id="calc-pip-val" placeholder="e.g. 10" min="0.01" step="0.01" oninput="calcPosition()" style="width:100%;">
-                  </div>
-                  <div>
-                    <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:5px;">Stop Loss (pips / points)</label>
-                    <input type="number" id="calc-sl-pips" placeholder="e.g. 20" min="0.1" step="0.1" oninput="calcPosition()" style="width:100%;">
-                  </div>
-                  <div>
-                    <label style="font-size:11px;color:var(--text3);display:block;margin-bottom:5px;">Take Profit (pips / points) <span style="color:var(--text3);font-weight:400;">optional</span></label>
-                    <input type="number" id="calc-tp-pips" placeholder="e.g. 40" min="0.1" step="0.1" oninput="calcPosition()" style="width:100%;">
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          </div>
-
-          <!-- Results -->
-          <div style="display:flex;flex-direction:column;gap:16px;">
-
-            <div class="card" id="calc-result-card" style="border:1px solid rgba(77,159,255,0.2);background:rgba(77,159,255,0.04);">
-              <div class="card-inner">
-                <div class="system-section-title" style="margin-bottom:16px;color:var(--blue);">📊 Result</div>
-                <div id="calc-result-body">
-                  <div style="color:var(--text3);font-size:13px;">Fill in the fields to calculate your position size.</div>
-                </div>
-              </div>
-            </div>
-
-            <!-- R:R Visual -->
-            <div class="card" id="calc-rr-card" style="display:none;">
-              <div class="card-inner">
-                <div class="system-section-title" style="margin-bottom:14px;">⚖️ Risk/Reward Ratio</div>
-                <div id="calc-rr-visual"></div>
-              </div>
-            </div>
-
-            <!-- Pip Calculator -->
-            <div class="card">
-              <div class="card-inner">
-                <div class="system-section-title" style="margin-bottom:14px;">📏 Pip Distance Helper</div>
-                <div style="font-size:12px;color:var(--text3);margin-bottom:10px;">Calculate pips between two price levels</div>
-                <div style="display:flex;gap:8px;margin-bottom:8px;">
-                  <div style="flex:1;">
-                    <label style="font-size:10px;color:var(--text3);display:block;margin-bottom:4px;">Entry Price</label>
-                    <input type="number" id="pip-entry" placeholder="e.g. 1.08500" step="0.00001" oninput="calcPipDist()" style="width:100%;">
-                  </div>
-                  <div style="flex:1;">
-                    <label style="font-size:10px;color:var(--text3);display:block;margin-bottom:4px;">SL Price</label>
-                    <input type="number" id="pip-sl" placeholder="e.g. 1.08300" step="0.00001" oninput="calcPipDist()" style="width:100%;">
-                  </div>
-                </div>
-                <div id="pip-dist-result" style="font-family:var(--mono);font-size:13px;color:var(--text2);min-height:20px;"></div>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- History -->
-        <div class="card" style="margin-top:20px;" id="calc-history-card">
-          <div class="card-inner">
-            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
-              <div class="system-section-title">🕒 Recent Calculations</div>
-              <button class="btn btn-ghost btn-sm" onclick="clearCalcHistory()">Clear</button>
-            </div>
-            <div id="calc-history-list" style="font-size:12px;color:var(--text3);">No calculations yet.</div>
-          </div>
-        </div>
-
       </div>
     </div>
 
@@ -1558,44 +1155,8 @@ svg{display:block;}
       </div>
     </div>
 
-    <!-- ═══════════════════════════════════════════════
-         PAGE: Study
-    ═══════════════════════════════════════════════ -->
-    <div class="page" id="page-study">
-
-      <!-- Filter tabs row -->
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px;">
-        <div class="period-tabs" id="study-filter-tabs">
-          <div class="period-tab active"  onclick="setStudyFilter('All',this)">All</div>
-          <div class="period-tab" onclick="setStudyFilter('Daily',this)">Daily</div>
-          <div class="period-tab" onclick="setStudyFilter('Weekly',this)">Weekly</div>
-          <div class="period-tab" onclick="setStudyFilter('Monthly',this)">Monthly</div>
-          <div class="period-tab" onclick="setStudyFilter('Asia',this)">Asia</div>
-          <div class="period-tab" onclick="setStudyFilter('London',this)">London</div>
-          <div class="period-tab" onclick="setStudyFilter('NYAM',this)">NYAM</div>
-          <div class="period-tab" onclick="setStudyFilter('NY Lunch',this)">NY Lunch</div>
-          <div class="period-tab" onclick="setStudyFilter('NYPM',this)">NYPM</div>
-        </div>
-        <button class="btn btn-primary btn-sm" onclick="openStudyEntry(null)">+ Add Entry</button>
-      </div>
-
-      <!-- Stats bar -->
-      <div class="period-stats" id="study-stats"></div>
-
-      <!-- Entry list -->
-      <div id="study-list"></div>
-    </div>
-
   </div><!-- .main -->
 </div><!-- .app -->
-
-<!-- ═══════════════════════════════════════════════
-     STUDY LIGHTBOX
-═══════════════════════════════════════════════ -->
-<div id="study-lightbox" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(6px);" onclick="closeStudyLightbox()">
-  <button onclick="closeStudyLightbox()" style="position:absolute;top:20px;right:28px;background:none;border:none;color:#fff;font-size:32px;cursor:pointer;line-height:1;z-index:2;">✕</button>
-  <img id="study-lightbox-img" src="" style="max-width:94vw;max-height:92vh;border-radius:12px;box-shadow:0 24px 80px rgba(0,0,0,0.8);object-fit:contain;" onclick="event.stopPropagation()">
-</div>
 
 <script>
 // ═══════════════════════════════════════════════════════════
@@ -1612,22 +1173,11 @@ let state = {
   goals: [],
   goalTab: 'longterm',
   reflections: [],
-  pairs: ['DXY','EURUSD','GBPUSD','XAUUSD','GBPJPY'],
-  dailyLossLimit: 0,
-  quickNotes: '',
-  dailyChecklists: {},   // keyed by date "YYYY-MM-DD" → {checks:{groupIdx_itemIdx:bool}, notes:''}
-  dailyChecklistItems: [
-    { label: '🧠 Mindset & Prep', items: ['Reviewed yesterday\'s trades','Set clear bias for today','No emotional baggage from yesterday','Slept well / feeling focused'] },
-    { label: '📊 Market Analysis', items: ['Checked economic calendar','Identified key levels on HTF','Confirmed session (London/NY/Asia)','Marked supply & demand zones'] },
-    { label: '⚙️ Execution Rules', items: ['Only trade my setups','Risk max 1-2% per trade','SL placed at structure','Min 1:2 R:R confirmed before entry'] },
-    { label: '📓 End of Day', items: ['Journaled all trades taken','Screenshot of each trade','Reviewed what went well','Noted what to improve'] },
-  ],
   models: ['ICT', 'SMC', 'Breaker', 'FVG', 'OB', 'BMS'],
   riskChecklist: ['Used correct lot size','SL at structure','Minimum 1:2 R:R','News check','Not revenge trading'],
   tradeChecklist: ['Confirmed bias','Entry on lower TF','Checked spread','Screenshot taken','Journaled post-trade'],
   htfChecklist: ['HTF trend confirmed','Key level identified','Session active','Market structure shift'],
-  studyEntries: [],
-  studyFilter: 'All',
+  calMonth: new Date().getMonth(),
   calYear: new Date().getFullYear(),
   refPeriod: 'all',
   journalPeriod: 'all',
@@ -1640,7 +1190,7 @@ const STORAGE_KEY = 'kurej_trading_v1';
 // 1. Create a PAT at: GitHub → Settings → Developer Settings →
 //    Personal Access Tokens → Tokens (classic) → check "gist" scope
 // 2. Paste it below. Leave empty to use localStorage only.
-const GIST_TOKEN    = localStorage.getItem('kurej_gist_token') || '';  // set via Sync UI
+const GIST_TOKEN    = '';           // ← paste your GitHub PAT here
 const GIST_FILENAME = 'kurej_trading.json';
 let   gistId        = localStorage.getItem('kurej_gist_id') || null;
 
@@ -1692,32 +1242,6 @@ async function loadState(){
     const s = localStorage.getItem(STORAGE_KEY);
     if(s) state = {...state, ...JSON.parse(s)};
   }catch(e){}
-}
-
-// ── Gist Sync UI ──
-function saveGistToken(){
-  const t = (document.getElementById('gist-token-input')||{}).value||'';
-  if(!t.trim()){ alert('Please enter a token.'); return; }
-  localStorage.setItem('kurej_gist_token', t.trim());
-  setTimeout(()=>location.reload(), 400);
-}
-function removeGistToken(){
-  if(!confirm('Remove sync token?')) return;
-  localStorage.removeItem('kurej_gist_token');
-  localStorage.removeItem('kurej_gist_id');
-  const s=document.getElementById('gist-status'); if(s) s.innerHTML='🗑 Token removed.';
-}
-async function syncNow(){
-  const token=localStorage.getItem('kurej_gist_token');
-  if(!token){ alert('No token saved. Enter your GitHub token first.'); return; }
-  const s=document.getElementById('gist-status'); if(s) s.innerHTML='⏳ Syncing…';
-  await saveState();
-  if(s) s.innerHTML='✅ Synced at '+new Date().toLocaleTimeString();
-}
-function initGistUI(){
-  const s=document.getElementById('gist-status'); if(!s) return;
-  const token=localStorage.getItem('kurej_gist_token');
-  s.innerHTML = token ? '✅ Token active — syncs automatically.' : '⚠️ No token — data is local only.';
 }
 
 // No demo data — real manual entry only
@@ -1949,14 +1473,13 @@ function saveAccount(id){
   if(id){ state.accounts = state.accounts.map(x=>x.id===id?a:x); }
   else  { state.accounts.push(a); }
   saveState(); closePanel(); renderAccounts(); renderJournalAccountSelector(); updateAccountDisplay();
-  renderTimeAnalysis();
 }
 
 // ═══════════════════════════════════════════════════════════
 // NAVIGATION
 // ═══════════════════════════════════════════════════════════
-const pageTitles = {dashboard:'Dashboard',accounts:'🏦 Accounts',journal:'Trade Journal',premarket:'Pre-Market Plan',reflections:'Reflections',study:'📚 Study',system:'System',goals:'🎯 Goals',calc:'🧮 Position Size Calculator'};
-const topbarBtns = {dashboard:'+ Log Trade',accounts:'+ Add Account',journal:'+ Log Trade',premarket:'+ Add Plan',reflections:'+ Add Reflection',study:'+ Add Entry',system:null,goals:'+ Add Goal',calc:null};
+const pageTitles = {dashboard:'Dashboard',accounts:'🏦 Accounts',journal:'Trade Journal',premarket:'Pre-Market Plan',reflections:'Reflections',system:'System',goals:'🎯 Goals'};
+const topbarBtns = {dashboard:'+ Log Trade',accounts:'+ Add Account',journal:'+ Log Trade',premarket:'+ Add Plan',reflections:'+ Add Reflection',system:null,goals:'+ Add Goal'};
 
 function navTo(page, el){
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
@@ -1980,20 +1503,17 @@ function topbarAction(){
   else if(page==='accounts') openAccountForm(null);
   else if(page==='premarket') openLogPlan(null);
   else if(page==='reflections') openLogReflection(null);
-  else if(page==='study') openStudyEntry(null);
   else if(page==='goals') openGoalForm(null);
 }
 
 function renderPage(page){
   if(page==='dashboard') renderDashboard();
-  else if(page==='accounts'){ renderAccounts(); renderTimeAnalysis(); }
+  else if(page==='accounts') renderAccounts();
   else if(page==='journal') renderJournal();
   else if(page==='premarket') renderPremarket();
   else if(page==='reflections') renderReflections();
-  else if(page==='study') renderStudy();
   else if(page==='system') renderSystem();
   else if(page==='goals') renderGoals();
-  else if(page==='calc') renderCalc();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -2214,12 +1734,6 @@ function renderDashboard(){
   renderEmotionalAvg(trades);
   renderCalendar(trades);
   renderInsights(st,trades);
-  renderHourlyHeatmap(trades);
-  renderStreakAndDrawdown(trades);
-  loadMarketNews();
-  const cdEl = document.getElementById('checklist-date');
-  if(cdEl && !cdEl.value) cdEl.value = new Date().toISOString().split('T')[0];
-  renderChecklist();
 }
 
 function renderKPIs(st){
@@ -2856,13 +2370,10 @@ function renderJournal(){
           ${acct?`<div><div class="ps-label">Account</div><div style="display:flex;align-items:center;gap:6px;"><span class="acct-dot" style="background:${acct.color};"></span>${acct.name}</div></div>`:''}
           <div><div class="ps-label">Entry / Exit</div><div class="mono">${t.entryTime||'—'} → ${t.exitTime||'—'}</div></div>
           <div><div class="ps-label">Entry Price</div><div class="mono">${t.entryPrice||'—'}</div></div>
-          <div><div class="ps-label">SL Pips</div><div class="mono">${t.stopLoss||'—'}</div></div>
-          <div><div class="ps-label">P/L Pips</div><div class="mono">${t.targetPips||'—'}${t.targetPips?'pip':''}</div></div>
-          ${t.riskDollar?`<div><div class="ps-label">Risk $</div><div class="mono red">$${parseFloat(t.riskDollar).toFixed(2)}</div></div>`:''}
+          <div><div class="ps-label">SL / Target</div><div class="mono">${t.stopLoss||'—'} / ${t.targetPips||'—'}pip</div></div>
           <div><div class="ps-label">CRT</div><div class="mono">${t.crt||'—'}</div></div>
           <div><div class="ps-label">Commission</div><div class="mono red">${t.commission||'—'}</div></div>
           <div><div class="ps-label">Session</div><div>${t.session||'—'}</div></div>
-          ${t.entryTF?`<div><div class="ps-label">Entry TF</div><div class="mono">${t.entryTF}</div></div>`:''}
           ${t.confluences?`<div style="grid-column:1/-1"><div class="ps-label">Confluences</div><div>${t.confluences}</div></div>`:''}
           ${(()=>{
             // Linked Pre-Market Plan rich card
@@ -3002,7 +2513,7 @@ function openLogTrade(id){
       <div class="form-group"><label class="form-label">Date</label><input type="date" id="f-date" value="${t?t.date:new Date().toISOString().split('T')[0]}"></div>
       <div class="form-group"><label class="form-label">Pair</label>
         <select id="f-pair">
-          ${(state.pairs||['EURUSD','GBPUSD','XAUUSD','GBPJPY']).map(p=>`<option ${t&&t.pair===p?'selected':''}>${p}</option>`).join('')}
+          ${['EURUSD','GBPUSD','XAUUSD','GBPJPY'].map(p=>`<option ${t&&t.pair===p?'selected':''}>${p}</option>`).join('')}
         </select>
       </div>
       <div class="form-group"><label class="form-label">Entry Time</label><input type="text" id="f-entry-time" value="${t?t.entryTime||'':''}" placeholder="09:00"></div>
@@ -3016,17 +2527,11 @@ function openLogTrade(id){
           ${['London','New York','Asia','London/NY Overlap'].map(s=>`<option ${t&&t.session===s?'selected':''}>${s}</option>`).join('')}
         </select>
       </div>
-      <div class="form-group"><label class="form-label">Entry Timeframe</label>
-        <select id="f-tf">
-          ${['','1M','2M','3M','5M','15M','30M','1H','4H','D'].map(tf=>`<option value="${tf}" ${t&&t.entryTF===tf?'selected':''}>${tf||'— Select —'}</option>`).join('')}
-        </select>
-      </div>
       <div class="form-group"><label class="form-label">Setup</label><input type="text" id="f-setup" value="${t?t.setup||'':''}" placeholder="FVG, OB, BMS..."></div>
       <div class="form-group"><label class="form-label">Entry Price</label><input type="number" id="f-entry" value="${t?t.entryPrice||'':''}" step="0.00001"></div>
       <div class="form-group"><label class="form-label">Exit Price</label><input type="number" id="f-exit" value="${t?t.exitPrice||'':''}" step="0.00001"></div>
       <div class="form-group"><label class="form-label">Stop Loss</label><input type="number" id="f-sl" value="${t?t.stopLoss||'':''}" step="0.00001"></div>
-      <div class="form-group"><label class="form-label">P/L Pips</label><input type="number" id="f-tpips" value="${t?t.targetPips||'':''}" step="1"></div>
-      <div class="form-group"><label class="form-label">Risk $</label><input type="number" id="f-riskdollar" value="${t?t.riskDollar||'':''}" step="0.01" placeholder="0.00"></div>
+      <div class="form-group"><label class="form-label">Target Pips</label><input type="number" id="f-tpips" value="${t?t.targetPips||'':''}" step="1"></div>
       <div class="form-group"><label class="form-label">Net P&L ($)</label><input type="number" id="f-pnl" value="${t?t.pnl||'':''}" step="0.01"></div>
       <div class="form-group"><label class="form-label">Commission</label><input type="number" id="f-commission" value="${t?t.commission||'':''}" step="0.01"></div>
       <div class="form-group"><label class="form-label">Result</label>
@@ -3293,13 +2798,11 @@ function saveTrade(id){
     model: document.getElementById('f-model').value,
     crt: document.getElementById('f-crt').value,
     session: document.getElementById('f-session').value,
-    entryTF: document.getElementById('f-tf').value,
     setup: document.getElementById('f-setup').value,
     entryPrice: document.getElementById('f-entry').value,
     exitPrice: document.getElementById('f-exit').value,
     stopLoss: document.getElementById('f-sl').value,
     targetPips: document.getElementById('f-tpips').value,
-    riskDollar: parseFloat(document.getElementById('f-riskdollar').value)||0,
     pnl: parseFloat(document.getElementById('f-pnl').value)||0,
     commission: document.getElementById('f-commission').value,
     result: document.getElementById('f-result').value,
@@ -3322,7 +2825,6 @@ function saveTrade(id){
   // refresh accounts page if visible
   const accPage = document.getElementById('page-accounts');
   if(accPage && accPage.classList.contains('active')) renderAccounts();
-renderTimeAnalysis();
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -3418,7 +2920,7 @@ function openLogPlan(id){
     <div class="form-grid">
       <div class="form-group"><label class="form-label">Date</label><input type="date" id="fp-date" value="${p?p.date:new Date().toISOString().split('T')[0]}"></div>
       <div class="form-group"><label class="form-label">Pair</label>
-        <select id="fp-pair">${(state.pairs||['DXY','EURUSD','GBPUSD','XAUUSD','GBPJPY']).map(x=>`<option ${p&&p.pair===x?'selected':''}>${x}</option>`).join('')}</select>
+        <select id="fp-pair">${['DXY','EURUSD','GBPUSD','XAUUSD','GBPJPY'].map(x=>`<option ${p&&p.pair===x?'selected':''}>${x}</option>`).join('')}</select>
       </div>
       <div class="form-group"><label class="form-label">Bias</label>
         <select id="fp-bias">${['Bullish','Bearish','Neutral'].map(x=>`<option ${p&&p.bias===x?'selected':''}>${x}</option>`).join('')}</select>
@@ -3563,361 +3065,26 @@ function saveReflection(id){
 // SYSTEM
 // ═══════════════════════════════════════════════════════════
 function renderSystem(){
-  if(!state.pairs) state.pairs=['DXY','EURUSD','GBPUSD','XAUUSD','GBPJPY'];
-  renderTagList('pairs-list',state.pairs,'pair');
   renderTagList('models-list',state.models,'model');
   renderTagList('risk-list',state.riskChecklist,'risk');
   renderTagList('trade-check-list',state.tradeChecklist,'tradecheck');
   renderTagList('htf-list',state.htfChecklist,'htf');
-  renderChecklistEditor();
-}
-
-function renderChecklistEditor(){
-  const body = document.getElementById('checklist-editor-body');
-  if(!body) return;
-  const groups = state.dailyChecklistItems || [];
-  body.innerHTML = groups.map((g, gi) => `
-    <div style="background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:14px;">
-      <!-- Group header: editable label + delete group -->
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-        <input type="text" value="${g.label.replace(/"/g,'&quot;')}"
-          style="flex:1;background:var(--glass2);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;color:var(--text);font-family:var(--sans);font-size:13px;font-weight:700;outline:none;"
-          onchange="renameChecklistGroup(${gi}, this.value)"
-          placeholder="Group label…">
-        <button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:rgba(255,77,109,0.3);flex-shrink:0;" onclick="removeChecklistGroup(${gi})">✕ Remove Group</button>
-      </div>
-      <!-- Existing items -->
-      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;" id="cl-items-${gi}">
-        ${g.items.map((item, ii) => `
-          <div style="display:flex;align-items:center;gap:8px;">
-            <input type="text" value="${item.replace(/"/g,'&quot;')}"
-              style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-family:var(--sans);font-size:13px;outline:none;"
-              onchange="editChecklistItem(${gi}, ${ii}, this.value)"
-              placeholder="Checklist item…">
-            <button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:rgba(255,77,109,0.2);flex-shrink:0;padding:4px 8px;" onclick="removeChecklistItem(${gi}, ${ii})">✕</button>
-          </div>`).join('')}
-      </div>
-      <!-- Add item to this group -->
-      <div class="add-tag-row" style="margin-top:4px;">
-        <input type="text" id="new-cl-item-${gi}" placeholder="Add item to this group…" style="flex:1;font-size:13px;"
-          onkeydown="if(event.key==='Enter')addChecklistItem(${gi})">
-        <button class="btn btn-primary btn-sm" onclick="addChecklistItem(${gi})">+ Add</button>
-      </div>
-    </div>`).join('');
-}
-
-function renameChecklistGroup(gi, val){
-  if(!state.dailyChecklistItems[gi]) return;
-  state.dailyChecklistItems[gi].label = val;
-  saveState(); renderChecklist();
-}
-function removeChecklistGroup(gi){
-  if(!confirm('Remove this entire group and all its items?')) return;
-  state.dailyChecklistItems.splice(gi, 1);
-  saveState(); renderChecklistEditor(); renderChecklist();
-}
-function editChecklistItem(gi, ii, val){
-  if(!state.dailyChecklistItems[gi]) return;
-  state.dailyChecklistItems[gi].items[ii] = val;
-  saveState(); renderChecklist();
-}
-function removeChecklistItem(gi, ii){
-  if(!state.dailyChecklistItems[gi]) return;
-  state.dailyChecklistItems[gi].items.splice(ii, 1);
-  saveState(); renderChecklistEditor(); renderChecklist();
-}
-function addChecklistItem(gi){
-  const inp = document.getElementById(`new-cl-item-${gi}`);
-  const v = (inp||{}).value?.trim();
-  if(!v) return;
-  state.dailyChecklistItems[gi].items.push(v);
-  inp.value = '';
-  saveState(); renderChecklistEditor(); renderChecklist();
-}
-function addChecklistGroup(){
-  const inp = document.getElementById('new-cl-group');
-  const v = (inp||{}).value?.trim();
-  if(!v) return;
-  if(!state.dailyChecklistItems) state.dailyChecklistItems = [];
-  state.dailyChecklistItems.push({label: v, items: []});
-  inp.value = '';
-  saveState(); renderChecklistEditor(); renderChecklist();
 }
 function renderTagList(containerId, arr, type){
   document.getElementById(containerId).innerHTML=arr.map((item,i)=>`
     <div class="tag-item">${item}<button class="tag-remove" onclick="removeTag('${type}',${i})">×</button></div>`).join('');
 }
 function removeTag(type,idx){
-  if(type==='pair') state.pairs.splice(idx,1);
-  else if(type==='model') state.models.splice(idx,1);
+  if(type==='model') state.models.splice(idx,1);
   else if(type==='risk') state.riskChecklist.splice(idx,1);
   else if(type==='tradecheck') state.tradeChecklist.splice(idx,1);
   else if(type==='htf') state.htfChecklist.splice(idx,1);
-  saveState();renderSystem();refreshPairDropdowns();
-}
-function addPair(){
-  const inp=document.getElementById('new-pair');
-  const v=inp.value.trim().toUpperCase();
-  if(!v) return;
-  if(!state.pairs) state.pairs=[];
-  if(state.pairs.includes(v)){inp.value='';return;}
-  state.pairs.push(v);inp.value='';
-  saveState();renderSystem();refreshPairDropdowns();
-}
-function refreshPairDropdowns(){
-  const pairs=state.pairs||['EURUSD','GBPUSD','XAUUSD','GBPJPY'];
-  // Journal filter
-  const jf=document.getElementById('j-filter-pair');
-  if(jf){const cur=jf.value;jf.innerHTML='<option value="">All Pairs</option>'+pairs.map(p=>`<option value="${p}">${p}</option>`).join('');jf.value=cur;}
-  // Journal form pair
-  const fp=document.getElementById('f-pair');
-  if(fp){const cur=fp.value;fp.innerHTML=pairs.map(p=>`<option value="${p}">${p}</option>`).join('');if(pairs.includes(cur))fp.value=cur;}
-  // Pre-market form pair
-  const fpp=document.getElementById('fp-pair');
-  if(fpp){const cur=fpp.value;fpp.innerHTML=pairs.map(p=>`<option value="${p}">${p}</option>`).join('');if(pairs.includes(cur))fpp.value=cur;}
+  saveState();renderSystem();
 }
 function addModel(){const v=document.getElementById('new-model').value.trim();if(v){state.models.push(v);document.getElementById('new-model').value='';saveState();renderSystem();}}
 function addRisk(){const v=document.getElementById('new-risk').value.trim();if(v){state.riskChecklist.push(v);document.getElementById('new-risk').value='';saveState();renderSystem();}}
 function addTradeCheck(){const v=document.getElementById('new-trade-check').value.trim();if(v){state.tradeChecklist.push(v);document.getElementById('new-trade-check').value='';saveState();renderSystem();}}
 function addHtf(){const v=document.getElementById('new-htf').value.trim();if(v){state.htfChecklist.push(v);document.getElementById('new-htf').value='';saveState();renderSystem();}}
-
-// ── Daily Checklist ───────────────────────────────────────────
-function getChecklistDate(){
-  const el = document.getElementById('checklist-date');
-  return el ? el.value : new Date().toISOString().split('T')[0];
-}
-function setChecklistToday(){
-  const el = document.getElementById('checklist-date');
-  if(el) el.value = new Date().toISOString().split('T')[0];
-  renderChecklist();
-}
-function checklistDateShift(delta){
-  const el = document.getElementById('checklist-date');
-  if(!el) return;
-  const d = new Date(el.value || new Date().toISOString().split('T')[0]);
-  d.setDate(d.getDate() + delta);
-  el.value = d.toISOString().split('T')[0];
-  renderChecklist();
-}
-function saveChecklistDay(){
-  const date = getChecklistDate();
-  if(!state.dailyChecklists) state.dailyChecklists={};
-  if(!state.dailyChecklists[date]) state.dailyChecklists[date]={checks:{},notes:''};
-  state.dailyChecklists[date].notes = (document.getElementById('checklist-day-notes')||{}).value||'';
-  saveState();
-}
-function toggleChecklistItem(date, key, checked){
-  if(!state.dailyChecklists) state.dailyChecklists={};
-  if(!state.dailyChecklists[date]) state.dailyChecklists[date]={checks:{},notes:''};
-  state.dailyChecklists[date].checks[key] = checked;
-  saveState();
-  updateChecklistScore(date);
-}
-function updateChecklistScore(date){
-  const groups = state.dailyChecklistItems || [];
-  const dayData = (state.dailyChecklists||{})[date]||{checks:{}};
-  let total=0, done=0;
-  groups.forEach((g,gi)=>g.items.forEach((_,ii)=>{
-    total++;
-    if(dayData.checks[`${gi}_${ii}`]) done++;
-  }));
-  const pct = total ? Math.round(done/total*100) : 0;
-  const circ = 2*Math.PI*20; // r=20 → ~125.66
-  const offset = circ - (pct/100)*circ;
-  const col = pct===100?'var(--green)':pct>=60?'var(--blue)':pct>=30?'var(--gold)':'var(--red)';
-  const tag = pct===100?'✅ Perfect day!':pct>=75?'Almost there!':pct>=50?'Halfway there':pct>0?'Keep going':'Not started';
-  const ring = document.getElementById('checklist-ring-fill');
-  const lbl = document.getElementById('checklist-ring-label');
-  const slbl = document.getElementById('checklist-score-label');
-  const stag = document.getElementById('checklist-score-tag');
-  if(ring){ring.style.strokeDashoffset=offset;ring.style.stroke=col;}
-  if(lbl){lbl.textContent=pct+'%';lbl.setAttribute('fill',col);}
-  if(slbl) slbl.textContent=`${done} / ${total}`;
-  if(stag){stag.textContent=tag;stag.style.color=col;}
-}
-function renderChecklist(){
-  const date = getChecklistDate();
-  const groups = state.dailyChecklistItems || [];
-  const dayData = (state.dailyChecklists||{})[date]||{checks:{},notes:''};
-  const body = document.getElementById('daily-checklist-body');
-  const notesEl = document.getElementById('checklist-day-notes');
-  if(notesEl) notesEl.value = dayData.notes||'';
-  if(!body) return;
-  body.innerHTML = groups.map((g,gi)=>`
-    <div>
-      <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${g.label}</div>
-      <div style="display:flex;flex-direction:column;gap:6px;">
-        ${g.items.map((item,ii)=>{
-          const key=`${gi}_${ii}`;
-          const checked=!!dayData.checks[key];
-          return `<label style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;background:${checked?'rgba(0,212,138,0.07)':'var(--glass)'};border:1px solid ${checked?'rgba(0,212,138,0.2)':'var(--border)'};cursor:pointer;transition:background .2s;">
-            <input type="checkbox" ${checked?'checked':''} onchange="toggleChecklistItem('${date}','${key}',this.checked)"
-              style="width:16px;height:16px;accent-color:var(--green);cursor:pointer;flex-shrink:0;">
-            <span style="font-size:13px;color:${checked?'var(--text)':'var(--text2)'};text-decoration:${checked?'line-through':'none'};transition:color .2s;">${item}</span>
-            ${checked?'<span style="margin-left:auto;font-size:13px;">✅</span>':''}
-          </label>`;
-        }).join('')}
-      </div>
-    </div>`).join('');
-  updateChecklistScore(date);
-}
-// legacy stub so any saved reference doesn't break
-// ── Market News ──────────────────────────────────────────────
-async function loadMarketNews(){
-  const el = document.getElementById('market-news-body');
-  const btn = document.getElementById('news-refresh-btn');
-  if(!el) return;
-  el.innerHTML = '<div style="color:var(--text3);font-size:13px;text-align:center;padding:20px 0;">⏳ Fetching latest news…</div>';
-  if(btn) btn.disabled = true;
-  try {
-    const feedUrl = 'https://feeds.finance.yahoo.com/rss/2.0/headline?s=EURUSD%3DX,GC%3DF,DX-Y.NYB&region=US&lang=en-US';
-    const url = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feedUrl)}&count=8`;
-    const res = await fetch(url);
-    const data = await res.json();
-    const items = data.items || [];
-    if(!items.length) throw new Error('empty');
-    el.innerHTML = `<div style="display:flex;flex-direction:column;gap:8px;">` +
-      items.slice(0,8).map(item => {
-        const ago = timeSince(new Date(item.pubDate));
-        const title = item.title.replace(/</g,'&lt;').replace(/>/g,'&gt;');
-        return `<a href="${item.link}" target="_blank" rel="noopener"
-          style="display:flex;flex-direction:column;gap:3px;padding:10px 12px;border-radius:10px;background:var(--glass);border:1px solid var(--border);text-decoration:none;transition:background .15s;"
-          onmouseover="this.style.background='var(--glass2)'" onmouseout="this.style.background='var(--glass)'">
-          <span style="font-size:13px;color:var(--text);line-height:1.4;">${title}</span>
-          <span style="font-size:11px;color:var(--text3);">${ago} · Yahoo Finance</span>
-        </a>`;
-      }).join('') +
-      `</div><div style="margin-top:10px;font-size:11px;color:var(--text3);text-align:right;">
-        <a href="https://finance.yahoo.com" target="_blank" style="color:var(--blue);">Open Yahoo Finance ↗</a>
-      </div>`;
-  } catch(e) {
-    el.innerHTML = `<div style="color:var(--text3);font-size:13px;padding:4px 0;">
-      Could not load live news. Quick links:
-      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;">
-        <a href="https://www.forexfactory.com" target="_blank" class="btn btn-ghost btn-sm">📅 Forex Factory</a>
-        <a href="https://finance.yahoo.com/topic/stock-market-news/" target="_blank" class="btn btn-ghost btn-sm">📰 Yahoo Finance</a>
-        <a href="https://www.investing.com/news/forex-news" target="_blank" class="btn btn-ghost btn-sm">💱 Investing.com</a>
-        <a href="https://www.marketwatch.com" target="_blank" class="btn btn-ghost btn-sm">📊 MarketWatch</a>
-      </div></div>`;
-  }
-  if(btn) btn.disabled = false;
-}
-function timeSince(date){
-  const s = Math.floor((new Date()-date)/1000);
-  if(s<60) return `${s}s ago`;
-  if(s<3600) return `${Math.floor(s/60)}m ago`;
-  if(s<86400) return `${Math.floor(s/3600)}h ago`;
-  return `${Math.floor(s/86400)}d ago`;
-}
-
-function saveQuickNotes(){
-  const pad = document.getElementById('quick-notes-pad');
-  if(!pad) return;
-  state.quickNotes = pad.value;
-  saveState();
-  const hint = document.getElementById('notes-saved-hint');
-  if(hint){ hint.style.opacity='1'; clearTimeout(hint._t); hint._t=setTimeout(()=>hint.style.opacity='0', 1400); }
-}
-
-// ── Hourly P&L Heatmap ───────────────────────────────────────
-function renderHourlyHeatmap(trades){
-  const el = document.getElementById('hourly-heatmap');
-  if(!el) return;
-  const hourMap = {};
-  for(let h=0;h<24;h++) hourMap[h]={pnl:0,count:0};
-  trades.forEach(t=>{
-    if(!t.time) return;
-    const h = parseInt((t.time||'').split(':')[0]);
-    if(isNaN(h)) return;
-    hourMap[h].pnl += +t.pnl;
-    hourMap[h].count++;
-  });
-  const active = Object.values(hourMap).filter(v=>v.count>0);
-  if(!active.length){
-    el.innerHTML='<div style="color:var(--text3);font-size:13px;padding:8px 0;">Log trades with a time to see this chart.</div>';
-    return;
-  }
-  const maxAbs = Math.max(...Object.values(hourMap).map(v=>Math.abs(v.pnl)),1);
-  const hours = Array.from({length:17},(_,i)=>i+6);
-  el.innerHTML = `<div style="display:flex;flex-direction:column;gap:4px;">` +
-    hours.map(h=>{
-      const d = hourMap[h];
-      const pct = Math.abs(d.pnl)/maxAbs*100;
-      const col = d.pnl>0?'var(--green)':d.pnl<0?'var(--red)':'var(--glass2)';
-      const label = `${h.toString().padStart(2,'0')}:00`;
-      return `<div style="display:flex;align-items:center;gap:8px;">
-        <span style="font-family:var(--mono);font-size:10px;color:var(--text3);width:38px;flex-shrink:0;">${label}</span>
-        <div style="flex:1;height:16px;background:var(--glass);border-radius:4px;overflow:hidden;">
-          <div style="width:${pct}%;height:100%;background:${col};border-radius:4px;"></div>
-        </div>
-        <span style="font-family:var(--mono);font-size:10px;color:${col};width:60px;text-align:right;flex-shrink:0;">${d.count?`${d.pnl>=0?'+':''}$${d.pnl.toFixed(0)}`:'—'}</span>
-      </div>`;
-    }).join('') + `</div>`;
-}
-
-// ── Streak & Max Drawdown ────────────────────────────────────
-function renderStreakAndDrawdown(trades){
-  const el = document.getElementById('streak-dd-wrap');
-  if(!el) return;
-  // Fall back to all trades across all accounts if filtered set is empty
-  const allTrades = (state.trades||[]);
-  const data = trades.length ? trades : allTrades;
-  if(!data.length){
-    el.innerHTML='<div style="color:var(--text3);font-size:13px;padding:8px 0;">Log trades to see streak & drawdown stats.</div>';
-    return;
-  }
-  const sorted = [...data].sort((a,b)=>a.date.localeCompare(b.date)||((a.time||'').localeCompare(b.time||'')));
-  // Current streak
-  let streak=0, streakType='';
-  for(let i=sorted.length-1;i>=0;i--){
-    const r=sorted[i].result;
-    if(r!=='Win'&&r!=='Loss') continue;
-    if(!streakType){streakType=r;streak=1;}
-    else if(r===streakType) streak++;
-    else break;
-  }
-  // Max win streak
-  let maxWin=0,cur=0;
-  sorted.forEach(t=>{if(t.result==='Win'){cur++;maxWin=Math.max(maxWin,cur);}else cur=0;});
-  // Max loss streak
-  let maxLoss=0; cur=0;
-  sorted.forEach(t=>{if(t.result==='Loss'){cur++;maxLoss=Math.max(maxLoss,cur);}else cur=0;});
-  // Max drawdown
-  const activeAcct = (state.accounts||[]).find(a=>a.id===state.activeAccountId);
-  const startBal = activeAcct ? activeAcct.balance : (state.startingBalance||0);
-  let peak=startBal||0, maxDD=0, runBal=startBal||0;
-  sorted.forEach(t=>{
-    runBal += +t.pnl;
-    if(runBal>peak) peak=runBal;
-    const dd=peak-runBal;
-    if(dd>maxDD) maxDD=dd;
-  });
-  const maxDDpct = peak ? (maxDD/peak*100) : 0;
-  const streakCol = streakType==='Win'?'var(--green)':streakType==='Loss'?'var(--red)':'var(--text3)';
-  el.innerHTML=`
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-      <div style="background:var(--glass);border-radius:10px;padding:14px;text-align:center;">
-        <div style="font-size:11px;color:var(--text3);margin-bottom:6px;">Current Streak</div>
-        <div style="font-family:var(--mono);font-size:26px;font-weight:700;color:${streakCol};">${streak||'—'}</div>
-        <div style="font-size:11px;color:${streakCol};margin-top:2px;">${streakType?streakType+' streak':'No data'}</div>
-      </div>
-      <div style="background:var(--glass);border-radius:10px;padding:14px;text-align:center;">
-        <div style="font-size:11px;color:var(--text3);margin-bottom:6px;">Max Drawdown</div>
-        <div style="font-family:var(--mono);font-size:26px;font-weight:700;color:var(--red);">$${maxDD.toFixed(0)}</div>
-        <div style="font-size:11px;color:var(--text3);margin-top:2px;">${maxDDpct.toFixed(1)}% from peak</div>
-      </div>
-      <div style="background:var(--glass);border-radius:10px;padding:14px;text-align:center;">
-        <div style="font-size:11px;color:var(--text3);margin-bottom:6px;">Best Win Streak</div>
-        <div style="font-family:var(--mono);font-size:26px;font-weight:700;color:var(--green);">${maxWin||'—'}</div>
-        <div style="font-size:11px;color:var(--text3);margin-top:2px;">consecutive wins</div>
-      </div>
-      <div style="background:var(--glass);border-radius:10px;padding:14px;text-align:center;">
-        <div style="font-size:11px;color:var(--text3);margin-bottom:6px;">Worst Loss Streak</div>
-        <div style="font-family:var(--mono);font-size:26px;font-weight:700;color:var(--red);">${maxLoss||'—'}</div>
-        <div style="font-size:11px;color:var(--text3);margin-top:2px;">consecutive losses</div>
-      </div>
-    </div>`;
-}
 
 function exportData(){
   const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});
@@ -4312,9 +3479,6 @@ function closePanel(){
   document.getElementById('side-panel').classList.remove('open');
   document.getElementById('panel-overlay').classList.remove('open');
   document.body.style.overflow='';
-  // Remove study wide class if present
-  const panel = document.getElementById('side-panel');
-  if(panel) panel.classList.remove('study-panel-wide');
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -4340,209 +3504,7 @@ function isThisWeek(dateStr){
 // ═══════════════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════════════
-// ═══════════════════════════════════════════════════════════
-// AUTH SYSTEM
-// ═══════════════════════════════════════════════════════════
-const AUTH_USERS_KEY   = 'kurej_auth_users';
-const AUTH_SESSION_KEY = 'kurej_auth_session';
-
-// ── Google OAuth (optional) ──────────────────────────────────
-// 1. Go to https://console.cloud.google.com/apis/credentials
-// 2. Create a project → Create Credentials → OAuth 2.0 Client ID → Web application
-// 3. Add your site URL (or http://localhost) to "Authorized JavaScript origins"
-// 4. Copy the Client ID and paste it below
-const GOOGLE_CLIENT_ID = ''; // ← paste your Google Client ID here, e.g. '123456.apps.googleusercontent.com'
-
-function initGoogleSignIn(){
-  const hasClientId = GOOGLE_CLIENT_ID && GOOGLE_CLIENT_ID.trim() !== '';
-
-  // Show/hide setup notice
-  ['login','signup'].forEach(tab => {
-    const notice = document.getElementById('google-setup-notice-'+tab);
-    if(notice) notice.style.display = hasClientId ? 'none' : '';
-  });
-
-  if(!hasClientId) return; // buttons still visible but clicking shows alert
-
-  // Initialize Google GSI
-  if(window.google && window.google.accounts){
-    window.google.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: handleGoogleCredential,
-      auto_select: false,
-      cancel_on_tap_outside: true,
-    });
-  }
-}
-
-function startGoogleSignIn(){
-  const hasClientId = GOOGLE_CLIENT_ID && GOOGLE_CLIENT_ID.trim() !== '';
-  if(!hasClientId){
-    authShowMsg('error','Google sign-in is not configured yet. Enter your Google Client ID in the script, or use email/password below.');
-    return;
-  }
-  if(!window.google || !window.google.accounts){
-    authShowMsg('error','Google sign-in failed to load. Check your internet connection and try again.');
-    return;
-  }
-  window.google.accounts.id.prompt((notification) => {
-    if(notification.isNotDisplayed() || notification.isSkippedMoment()){
-      // Fallback: open the popup manually
-      window.google.accounts.id.renderButton(
-        document.createElement('div'),
-        { theme:'outline', size:'large' }
-      );
-      // Try one-tap popup
-      authShowMsg('error','Google sign-in popup was blocked. Please allow popups for this page and try again.');
-    }
-  });
-}
-
-function parseJwt(token){
-  try{
-    const base64 = token.split('.')[1].replace(/-/g,'+').replace(/_/g,'/');
-    const json = decodeURIComponent(atob(base64).split('').map(c=>'%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-    return JSON.parse(json);
-  }catch(e){ return null; }
-}
-
-async function handleGoogleCredential(response){
-  const payload = parseJwt(response.credential);
-  if(!payload || !payload.email){
-    authShowMsg('error','Google sign-in failed. Could not read account info.');
-    return;
-  }
-
-  const email = payload.email.toLowerCase();
-  const name  = payload.name || email;
-
-  // Auto-create account if first time, or just log in
-  const users = getAuthUsers();
-  if(!users[email]){
-    // Create a Google-linked account (no password needed)
-    users[email] = {
-      hash: '__google__',
-      googleLinked: true,
-      name: name,
-      createdAt: Date.now()
-    };
-    saveAuthUsers(users);
-    authShowMsg('success', 'Welcome, ' + name + '! Account created via Google.');
-  } else {
-    authShowMsg('success', 'Welcome back, ' + name + '!');
-  }
-
-  setSession(email, true); // always remember Google users
-  setTimeout(()=> authGrantAccess(email), 600);
-}
-
-// Run after GSI script loads
-window.addEventListener('load', ()=>{ setTimeout(initGoogleSignIn, 500); });
-
-
-
-// SHA-256 hash via Web Crypto API; btoa fallback
-
-function isValidEmail(v){
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
-}
-
-
-function getSession(){
-  try{
-    const s = sessionStorage.getItem(AUTH_SESSION_KEY) || localStorage.getItem(AUTH_SESSION_KEY+'_persistent');
-    if(s){ const d=JSON.parse(s); if(d && d.email) return d; }
-  }catch(e){}
-  return null;
-}
-function setSession(email, remember){
-  const data = JSON.stringify({email, ts: Date.now()});
-  sessionStorage.setItem(AUTH_SESSION_KEY, data);
-  if(remember){
-    localStorage.setItem(AUTH_SESSION_KEY+'_persistent', data);
-  } else {
-    localStorage.removeItem(AUTH_SESSION_KEY+'_persistent');
-  }
-}
-function clearSession(){
-  sessionStorage.removeItem(AUTH_SESSION_KEY);
-  localStorage.removeItem(AUTH_SESSION_KEY+'_persistent');
-}
-
-
-
-// Forgot password state
-let _fpEmail = '';
-
-
-
-
-// ── SIGN UP ──
-async function doSignup(){
-  const email = (document.getElementById('su-user').value||'').trim().toLowerCase();
-  const pass  =  document.getElementById('su-pass').value||'';
-
-  if(!email){ authShowMsg('error','Please enter your email address.'); return; }
-  if(!isValidEmail(email)){ authShowMsg('error','Please enter a valid email address.'); return; }
-  if(pass.length < 6){ authShowMsg('error','Password must be at least 6 characters.'); return; }
-
-  const users = getAuthUsers();
-  if(users[email]){ authShowMsg('error','An account with that email already exists. Please log in.'); return; }
-
-  const hashed = await hashPassword(pass);
-  users[email] = { hash: hashed, createdAt: Date.now() };
-  saveAuthUsers(users);
-  setSession(email, true);
-  authShowMsg('success','Account created! Signing you in…');
-  setTimeout(()=>authGrantAccess(email), 700);
-}
-
-// ── Auth removed — open access ──
-function authGrantAccess(email){
-  initGistUI();
-}
-
-// ── Seed preview data so the dashboard renders visibly behind auth ──
-function seedPreviewBackground(){
-  // Only seed if state is completely empty (no real user data)
-  if((state.trades||[]).length > 0 || (state.accounts||[]).length > 0) return;
-
-  const acctId = 'preview_ac';
-  state.accounts = [{
-    id: acctId, name: 'FTMO Challenge', firm: 'FTMO',
-    phase: 'Challenge', balance: 100000, maxDD: 10,
-    profitTarget: 10, color: '#4d9fff', notes: ''
-  }];
-  state.activeAccountId = acctId;
-  state.acctSelectorView = 'id:' + acctId;
-  state.accountName = 'Preview';
-  state.startingBalance = 100000;
-
-  const pairs = ['EURUSD','GBPUSD','XAUUSD','USDJPY','GBPJPY','EURUSD','XAUUSD'];
-  const setups = ['ICT','SMC','Breaker','FVG','OB'];
-  const sessions = ['London','New York','Asian','London'];
-  const results = ['Win','Win','Win','Loss','Win','Loss','Win','Win','Loss','Win'];
-  const today = new Date();
-  const trades = [];
-  for(let i = 0; i < 28; i++){
-    const d = new Date(today); d.setDate(today.getDate() - i * 2);
-    const result = results[i % results.length];
-    const pnl = result==='Win' ? (Math.random()*900+200).toFixed(2) : -(Math.random()*400+100).toFixed(2);
-    trades.push({
-      id:'prev_t'+i, accountId:acctId,
-      date: d.toISOString().split('T')[0],
-      pair: pairs[i % pairs.length],
-      setup: setups[i % setups.length],
-      session: sessions[i % sessions.length],
-      result, pnl: +pnl,
-      rr: result==='Win'?(Math.random()*2+1).toFixed(1):'0',
-      emotion:'calm', notes:'', screenshot:'',
-      checklist:[], riskChecklist:[]
-    });
-  }
-  state.trades = trades;
-}
-
+loadState();
 
 function updateAccountDisplay(){
   const accts = state.accounts||[];
@@ -4604,1116 +3566,6 @@ function updateAccountDisplay(){
   // Determine current view label
   const view = state.acctSelectorView || 'all';
   refreshAcctSelectorLabel();
-}
-
-
-
-// ═══════════════════════════════════════════════════════════
-// TIME-BASED ANALYSIS
-// ═══════════════════════════════════════════════════════════
-let tbaTab = 'weekday';
-
-function setTbaTab(tab, el){
-  tbaTab = tab;
-  document.querySelectorAll('#tba-tabs .period-tab').forEach(t=>t.classList.remove('active'));
-  if(el) el.classList.add('active');
-  renderTimeAnalysis();
-}
-
-function renderTimeAnalysis(){
-  // Populate account filter dropdown
-  const sel = document.getElementById('tba-acct-filter');
-  if(sel){
-    const accts = state.accounts||[];
-    const cur = sel.value;
-    sel.innerHTML = '<option value="">All Accounts</option>' +
-      accts.map(a=>`<option value="${a.id}" ${cur===a.id?'selected':''}>${a.name}</option>`).join('');
-  }
-
-  // Get trades for selected account
-  const acctId = sel ? sel.value : '';
-  const trades = acctId
-    ? (state.trades||[]).filter(t=>t.accountId===acctId)
-    : (state.trades||[]);
-
-  const el = document.getElementById('tba-content');
-  if(!el) return;
-
-  if(!trades.length){
-    el.innerHTML = `<div class="tba-empty-state">
-      <div class="tba-empty-icon">⏱</div>
-      <div class="tba-empty-msg">No trades logged yet — add trades with entry times to see time-based analysis.</div>
-    </div>`;
-    return;
-  }
-
-  if(tbaTab === 'weekday') renderTbaWeekday(trades, el);
-  else if(tbaTab === 'hour') renderTbaHour(trades, el);
-  else if(tbaTab === 'minute') renderTbaMinute(trades, el);
-}
-
-// ── helpers ──────────────────────────────────────────────
-function tbaParseTime(t){
-  // Returns {h, m} or null. Accepts "HH:MM", "HH:MM:SS"
-  if(!t || typeof t !== 'string') return null;
-  const m = t.match(/^(\d{1,2}):(\d{2})/);
-  return m ? {h:parseInt(m[1],10), m:parseInt(m[2],10)} : null;
-}
-
-function tbaParseDate(d){
-  // Returns weekday index 0=Mon…6=Sun
-  if(!d) return null;
-  const dt = new Date(d+'T12:00:00');
-  if(isNaN(dt)) return null;
-  return (dt.getDay()+6)%7; // 0=Mon
-}
-
-function tbaBucket(trades, keyFn){
-  const map = {};
-  trades.forEach(t=>{
-    const key = keyFn(t);
-    if(key === null || key === undefined) return;
-    if(!map[key]) map[key]={pnl:0,wins:0,losses:0,count:0};
-    map[key].pnl += parseFloat(t.pnl)||0;
-    map[key].count++;
-    if(t.result==='Win') map[key].wins++;
-    else if(t.result==='Loss') map[key].losses++;
-  });
-  return map;
-}
-
-function tbaBarChart(rows, labelWidth){
-  // rows: [{label, pnl, wins, losses, count}]
-  if(!rows.length) return '<div style="color:var(--text3);font-size:13px;">No data with time information.</div>';
-
-  const maxAbs = Math.max(1, ...rows.map(r=>Math.abs(r.pnl)));
-  const lw = labelWidth||'tba-row-label';
-
-  return rows.map(r=>{
-    const pct = Math.min(100, Math.abs(r.pnl)/maxAbs*100);
-    const pos = r.pnl >= 0;
-    const wr = (r.wins+r.losses) ? Math.round(r.wins/(r.wins+r.losses)*100) : null;
-    const pnlColor = r.pnl>=0?'var(--green)':'var(--red)';
-    const pnlStr = (r.pnl>=0?'+':'') + '$' + Math.abs(r.pnl).toFixed(0);
-
-    // Bar: positive bars grow right from center, negative bars grow left from center
-    const barHtml = pos
-      ? `<div class="tba-bar-pos" style="left:50%;width:${pct/2}%;"></div>`
-      : `<div class="tba-bar-neg" style="width:${pct/2}%;"></div>`;
-
-    return `<div class="tba-row">
-      <span class="tba-row-label ${lw}">${r.label}</span>
-      <div class="tba-track">
-        <div class="tba-center-line"></div>
-        ${barHtml}
-      </div>
-      <div class="tba-row-meta">
-        <span class="tba-pnl-val" style="color:${pnlColor};">${pnlStr}</span>
-        <span class="tba-wr-val">${wr!==null?wr+'%':'—'}</span>
-        <span class="tba-cnt-val">${r.count}t</span>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-// ── By Weekday ───────────────────────────────────────────
-function renderTbaWeekday(trades, el){
-  const DAYS = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-  const map = tbaBucket(trades, t => tbaParseDate(t.date));
-
-  // Summary stats
-  const best = DAYS.reduce((b,d,i)=>{
-    const v=map[i]; if(!v) return b;
-    return (!b || v.pnl > map[b].pnl) ? i : b;
-  }, null);
-  const worst = DAYS.reduce((b,d,i)=>{
-    const v=map[i]; if(!v) return b;
-    return (!b || v.pnl < map[b].pnl) ? i : b;
-  }, null);
-  const busiest = DAYS.reduce((b,d,i)=>{
-    const v=map[i]; if(!v) return b;
-    return (!b || v.count > map[b].count) ? i : b;
-  }, null);
-
-  const rows = DAYS.map((d,i)=>{
-    const v = map[i]||{pnl:0,wins:0,losses:0,count:0};
-    return {label:d, ...v};
-  });
-
-  const statsHtml = `<div class="tba-grid">
-    ${best!==null?`<div class="tba-stat"><div class="tba-stat-label">Best Day</div><div class="tba-stat-val green">${DAYS[best]}</div></div>`:''}
-    ${worst!==null?`<div class="tba-stat"><div class="tba-stat-label">Worst Day</div><div class="tba-stat-val red">${DAYS[worst]}</div></div>`:''}
-    ${busiest!==null?`<div class="tba-stat"><div class="tba-stat-label">Most Active</div><div class="tba-stat-val blue">${DAYS[busiest]}</div></div>`:''}
-    <div class="tba-stat"><div class="tba-stat-label">Days Traded</div><div class="tba-stat-val">${Object.keys(map).length}</div></div>
-  </div>`;
-
-  el.innerHTML = statsHtml + `<div class="tba-bar-section">
-    <div class="tba-bar-section-title">P&L by Weekday — bars diverge from zero</div>
-    ${tbaBarChart(rows)}
-  </div>`;
-}
-
-// ── By Hour ──────────────────────────────────────────────
-function renderTbaHour(trades, el){
-  const map = tbaBucket(trades, t => {
-    const p = tbaParseTime(t.entryTime||t.time||t.entry_time||'');
-    return p !== null ? p.h : null;
-  });
-
-  const hours = Array.from({length:24},(_,i)=>i);
-  const rows = hours.map(h=>{
-    const v = map[h]||{pnl:0,wins:0,losses:0,count:0};
-    const label = String(h).padStart(2,'0')+':00';
-    return {label, h, ...v};
-  });
-
-  // Only show hours that have at least 1 trade OR are standard market hours (6-22)
-  const filtered = rows.filter(r=>r.count>0||(r.h>=6&&r.h<=21));
-  const active = filtered.filter(r=>r.count>0);
-
-  if(!active.length){
-    el.innerHTML = `<div class="tba-empty-state">
-      <div class="tba-empty-icon">🕐</div>
-      <div class="tba-empty-msg">No trades have entry times logged yet.<br><span style="font-size:12px;color:var(--text3);">Add "Entry Time" when logging trades to unlock this view.</span></div>
-    </div>`;
-    return;
-  }
-
-  const best  = active.reduce((b,r)=>r.pnl>b.pnl?r:b, active[0]);
-  const worst = active.reduce((b,r)=>r.pnl<b.pnl?r:b, active[0]);
-  const busy  = active.reduce((b,r)=>r.count>b.count?r:b, active[0]);
-
-  const statsHtml = `<div class="tba-grid">
-    <div class="tba-stat"><div class="tba-stat-label">Best Hour</div><div class="tba-stat-val green">${best.label}</div></div>
-    <div class="tba-stat"><div class="tba-stat-label">Worst Hour</div><div class="tba-stat-val red">${worst.label}</div></div>
-    <div class="tba-stat"><div class="tba-stat-label">Most Active</div><div class="tba-stat-val blue">${busy.label}</div></div>
-    <div class="tba-stat"><div class="tba-stat-label">Hours Active</div><div class="tba-stat-val">${active.length}</div></div>
-  </div>`;
-
-  el.innerHTML = statsHtml + `<div class="tba-bar-section">
-    <div class="tba-bar-section-title">P&L by Hour (UTC) — bars diverge from zero</div>
-    ${tbaBarChart(filtered)}
-  </div>`;
-}
-
-// ── By Minute ────────────────────────────────────────────
-function renderTbaMinute(trades, el){
-  // Bucket by 5-minute slots within the hour (0,5,10,…55)
-  const SLOT = 5;
-  const map = tbaBucket(trades, t => {
-    const p = tbaParseTime(t.entryTime||t.time||t.entry_time||'');
-    return p !== null ? Math.floor(p.m/SLOT)*SLOT : null;
-  });
-
-  const slots = Array.from({length:60/SLOT},(_,i)=>i*SLOT);
-  const rows = slots.map(s=>{
-    const v = map[s]||{pnl:0,wins:0,losses:0,count:0};
-    const label = ':'+String(s).padStart(2,'0');
-    return {label, s, ...v};
-  });
-
-  const active = rows.filter(r=>r.count>0);
-
-  if(!active.length){
-    el.innerHTML = `<div class="tba-empty-state">
-      <div class="tba-empty-icon">⏱</div>
-      <div class="tba-empty-msg">No trades have entry times logged yet.<br><span style="font-size:12px;color:var(--text3);">Add "Entry Time" when logging trades to unlock this view.</span></div>
-    </div>`;
-    return;
-  }
-
-  const best  = active.reduce((b,r)=>r.pnl>b.pnl?r:b, active[0]);
-  const worst = active.reduce((b,r)=>r.pnl<b.pnl?r:b, active[0]);
-  const busy  = active.reduce((b,r)=>r.count>b.count?r:b, active[0]);
-
-  const statsHtml = `<div class="tba-grid">
-    <div class="tba-stat"><div class="tba-stat-label">Best Minute</div><div class="tba-stat-val green">${best.label}</div></div>
-    <div class="tba-stat"><div class="tba-stat-label">Worst Minute</div><div class="tba-stat-val red">${worst.label}</div></div>
-    <div class="tba-stat"><div class="tba-stat-label">Most Active</div><div class="tba-stat-val blue">${busy.label}</div></div>
-    <div class="tba-stat"><div class="tba-stat-label">Minute Slots</div><div class="tba-stat-val">${active.length} / 12</div></div>
-  </div>`;
-
-  el.innerHTML = statsHtml + `<div class="tba-bar-section">
-    <div class="tba-bar-section-title">P&L by minute-of-hour (5-min buckets) — bars diverge from zero</div>
-    ${tbaBarChart(rows)}
-  </div>`;
-}
-
-
-// ═══════════════════════════════════════════════════════════
-// STUDY PAGE
-// ═══════════════════════════════════════════════════════════
-
-const STUDY_SESSIONS = ['Daily','Weekly','Monthly','Asia','London','NYAM','NY Lunch','NYPM'];
-const STUDY_SESSION_COLORS = {
-  Daily:   {bg:'rgba(77,159,255,0.15)', color:'var(--blue)',   border:'rgba(77,159,255,0.3)'},
-  Weekly:  {bg:'rgba(0,212,138,0.15)',  color:'var(--green)',  border:'rgba(0,212,138,0.3)'},
-  Monthly: {bg:'rgba(255,209,102,0.15)',color:'var(--gold)',   border:'rgba(255,209,102,0.3)'},
-  Asia:    {bg:'rgba(180,126,255,0.15)',color:'#b47eff',       border:'rgba(180,126,255,0.3)'},
-  London:  {bg:'rgba(255,150,50,0.15)', color:'#ff9632',       border:'rgba(255,150,50,0.3)'},
-  NYAM:    {bg:'rgba(77,230,255,0.15)', color:'#4de6ff',       border:'rgba(77,230,255,0.3)'},
-  'NY Lunch':{bg:'rgba(255,100,200,0.15)',color:'#ff64c8',     border:'rgba(255,100,200,0.3)'},
-  NYPM:    {bg:'rgba(255,77,109,0.15)', color:'var(--red)',    border:'rgba(255,77,109,0.3)'},
-};
-
-function setStudyFilter(filter, el){
-  state.studyFilter = filter;
-  document.querySelectorAll('#study-filter-tabs .period-tab').forEach(t=>t.classList.remove('active'));
-  if(el) el.classList.add('active');
-  renderStudy();
-}
-
-
-// ═══════════════════════════════════════════════════════════
-// POSITION SIZE CALCULATOR
-// ═══════════════════════════════════════════════════════════
-const INSTRUMENT_CONFIG = {
-  forex:  { label:'Forex',    pipVal:10,    pipSize:0.0001, unit:'lots',   lotLabel:'Lots' },
-  xauusd: { label:'XAUUSD',  pipVal:10,    pipSize:0.1,    unit:'lots',   lotLabel:'Lots' },
-  nas100: { label:'NAS100',  pipVal:1,     pipSize:1,      unit:'lots',   lotLabel:'Contracts' },
-  us30:   { label:'US30',    pipVal:1,     pipSize:1,      unit:'lots',   lotLabel:'Contracts' },
-  us500:  { label:'S&P 500', pipVal:12.50, pipSize:0.25,   unit:'lots',   lotLabel:'Contracts' },
-  custom: { label:'Custom',  pipVal:null,  pipSize:1,      unit:'lots',   lotLabel:'Units' },
-};
-
-function renderCalc(){
-  // Prefill balance from active account
-  const balEl = document.getElementById('calc-balance');
-  if(balEl && !balEl.value){
-    const acct = (state.accounts||[]).find(a=>a.id===state.activeAccountId);
-    if(acct) balEl.value = acct.balance;
-    else if(state.startingBalance) balEl.value = state.startingBalance;
-  }
-  // Prefill risk %
-  const riskEl = document.getElementById('calc-risk-pct');
-  if(riskEl && !riskEl.value) riskEl.value = state.calcRiskPct || 1;
-
-  // Instrument preset chips
-  const presetsEl = document.getElementById('calc-presets');
-  if(presetsEl){
-    const instruments = [
-      {key:'forex',label:'Forex'},
-      {key:'xauusd',label:'🥇 XAUUSD'},
-      {key:'nas100',label:'📈 NAS100'},
-      {key:'us30',label:'🏛 US30'},
-      {key:'us500',label:'S&P 500'},
-      {key:'custom',label:'Custom'},
-    ];
-    presetsEl.innerHTML = instruments.map(({key,label})=>`
-      <button class="btn btn-ghost btn-sm" onclick="setCalcInstrument('${key}')" id="calc-preset-${key}"
-        style="border-radius:20px;${(document.getElementById('calc-instrument')||{}).value===key?'background:var(--blue-dim);color:var(--blue);border-color:rgba(77,159,255,0.3);':''}">
-        ${label}
-      </button>`).join('');
-  }
-  renderCalcHistory();
-  calcPosition();
-}
-
-function setCalcInstrument(key){
-  const sel = document.getElementById('calc-instrument');
-  if(sel){ sel.value = key; onCalcInstrumentChange(); }
-}
-
-function onCalcInstrumentChange(){
-  const key = document.getElementById('calc-instrument').value;
-  const pipRow = document.getElementById('calc-pip-row');
-  if(pipRow) pipRow.style.display = key==='custom' ? '' : 'none';
-  // Update preset highlight
-  document.querySelectorAll('[id^="calc-preset-"]').forEach(b=>{
-    const bkey = b.id.replace('calc-preset-','');
-    b.style.background = bkey===key?'var(--blue-dim)':'';
-    b.style.color = bkey===key?'var(--blue)':'';
-    b.style.borderColor = bkey===key?'rgba(77,159,255,0.3)':'';
-  });
-  calcPosition();
-}
-
-function setRiskPct(v){
-  const el = document.getElementById('calc-risk-pct');
-  if(el){ el.value=v; calcPosition(); }
-}
-
-function calcPosition(){
-  const balance  = parseFloat(document.getElementById('calc-balance')?.value)||0;
-  const riskPct  = parseFloat(document.getElementById('calc-risk-pct')?.value)||0;
-  const slPips   = parseFloat(document.getElementById('calc-sl-pips')?.value)||0;
-  const tpPips   = parseFloat(document.getElementById('calc-tp-pips')?.value)||0;
-  const key      = document.getElementById('calc-instrument')?.value||'forex';
-  const cfg      = INSTRUMENT_CONFIG[key]||INSTRUMENT_CONFIG.forex;
-  const pipVal   = key==='custom'
-    ? (parseFloat(document.getElementById('calc-pip-val')?.value)||10)
-    : cfg.pipVal;
-
-  // Save pref
-  if(riskPct) { state.calcRiskPct = riskPct; saveState(); }
-
-  const resultEl = document.getElementById('calc-result-body');
-  if(!resultEl) return;
-
-  if(!balance||!riskPct||!slPips||!pipVal){
-    resultEl.innerHTML=`<div style="color:var(--text3);font-size:13px;">Fill in Account Balance, Risk %, Stop Loss, and check instrument settings.</div>`;
-    document.getElementById('calc-rr-card').style.display='none';
-    return;
-  }
-
-  const riskAmt  = balance * (riskPct/100);
-  const lotSize  = riskAmt / (slPips * pipVal);
-  const lotSizeR = Math.floor(lotSize*100)/100; // round down for safety
-  const pipProfit = tpPips * pipVal * lotSizeR;
-  const rr = tpPips ? (tpPips/slPips).toFixed(2) : null;
-
-  resultEl.innerHTML = `
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;">
-      <div style="background:var(--glass2);border-radius:10px;padding:14px;text-align:center;">
-        <div style="font-size:10px;color:var(--text3);margin-bottom:4px;">Position Size</div>
-        <div style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--blue);">${lotSizeR.toFixed(2)}</div>
-        <div style="font-size:11px;color:var(--text3);">${cfg.lotLabel}</div>
-      </div>
-      <div style="background:var(--glass2);border-radius:10px;padding:14px;text-align:center;">
-        <div style="font-size:10px;color:var(--text3);margin-bottom:4px;">$ at Risk</div>
-        <div style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--red);">$${riskAmt.toFixed(2)}</div>
-        <div style="font-size:11px;color:var(--text3);">${riskPct}% of balance</div>
-      </div>
-      ${tpPips?`
-      <div style="background:var(--glass2);border-radius:10px;padding:14px;text-align:center;">
-        <div style="font-size:10px;color:var(--text3);margin-bottom:4px;">Potential Profit</div>
-        <div style="font-family:var(--mono);font-size:28px;font-weight:700;color:var(--green);">$${pipProfit.toFixed(2)}</div>
-        <div style="font-size:11px;color:var(--text3);">${tpPips} pips</div>
-      </div>
-      <div style="background:var(--glass2);border-radius:10px;padding:14px;text-align:center;">
-        <div style="font-size:10px;color:var(--text3);margin-bottom:4px;">R:R Ratio</div>
-        <div style="font-family:var(--mono);font-size:28px;font-weight:700;color:${+rr>=2?'var(--green)':+rr>=1.5?'var(--gold)':'var(--red)'};">1:${rr}</div>
-        <div style="font-size:11px;color:var(--text3);">${+rr>=2?'✅ Good':'⚠️ Review setup'}</div>
-      </div>`:''}
-    </div>
-    <div style="background:var(--glass);border-radius:8px;padding:10px 14px;font-size:12px;color:var(--text2);line-height:1.7;">
-      <b>Max exact lots:</b> <span class="mono">${lotSize.toFixed(4)}</span> &nbsp;·&nbsp;
-      <b>Rounded down:</b> <span class="mono blue">${lotSizeR.toFixed(2)}</span> ${cfg.lotLabel}<br>
-      <b>SL value per lot:</b> <span class="mono">$${(slPips*pipVal).toFixed(2)}</span> &nbsp;·&nbsp;
-      <b>Pip value:</b> <span class="mono">$${pipVal.toFixed(2)}/pip</span>
-    </div>
-    <button class="btn btn-primary" style="margin-top:14px;width:100%;" onclick="saveCalcToHistory(${lotSizeR.toFixed(2)},${riskAmt.toFixed(2)},${slPips},${tpPips||0},'${key}',${riskPct})">
-      💾 Save to History
-    </button>`;
-
-  // R:R visual bar
-  const rrCard = document.getElementById('calc-rr-card');
-  const rrVis  = document.getElementById('calc-rr-visual');
-  if(tpPips && rrCard && rrVis){
-    rrCard.style.display='';
-    const slW = 100, tpW = Math.min(tpPips/slPips*100, 300);
-    rrVis.innerHTML=`
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;">
-        <div style="flex:none;width:${slW}px;height:22px;background:var(--red);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;">SL ${slPips}p</div>
-        <div style="flex:none;width:${Math.min(tpW,200)}px;height:22px;background:var(--green);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;">TP ${tpPips}p</div>
-      </div>
-      <div style="font-size:12px;color:var(--text3);">Every $${riskAmt.toFixed(0)} risked targets $${pipProfit.toFixed(0)} reward &nbsp;(1:${rr})</div>`;
-  } else if(rrCard){ rrCard.style.display='none'; }
-}
-
-function calcPipDist(){
-  const entry = parseFloat(document.getElementById('pip-entry')?.value);
-  const sl    = parseFloat(document.getElementById('pip-sl')?.value);
-  const el    = document.getElementById('pip-dist-result');
-  if(!el) return;
-  if(isNaN(entry)||isNaN(sl)){el.innerHTML='';return;}
-  const diff  = Math.abs(entry-sl);
-  const pips4 = (diff/0.0001).toFixed(1);
-  const pips1 = (diff/0.001).toFixed(1);
-  const pts   = diff.toFixed(5);
-  el.innerHTML=`<span style="color:var(--blue);">${pips4} pips</span> <span style="color:var(--text3);font-size:11px;">(4-dec pairs) &nbsp;·&nbsp; ${pips1} pips (JPY/Gold) &nbsp;·&nbsp; ${pts} pts raw</span>`;
-}
-
-function saveCalcToHistory(lots,risk,sl,tp,instr,riskPct){
-  if(!state.calcHistory) state.calcHistory=[];
-  state.calcHistory.unshift({
-    lots,risk,sl,tp,instr,riskPct,
-    ts: new Date().toLocaleString()
-  });
-  if(state.calcHistory.length>20) state.calcHistory.length=20;
-  saveState();
-  renderCalcHistory();
-}
-function clearCalcHistory(){
-  state.calcHistory=[];saveState();renderCalcHistory();
-}
-function renderCalcHistory(){
-  const el = document.getElementById('calc-history-list');
-  if(!el) return;
-  const h = state.calcHistory||[];
-  if(!h.length){el.innerHTML='<span style="color:var(--text3);">No calculations saved yet.</span>';return;}
-  el.innerHTML=`<div style="display:flex;flex-direction:column;gap:6px;">` +
-    h.map(c=>`
-      <div style="display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--glass);border-radius:8px;font-size:12px;">
-        <span style="color:var(--text3);flex-shrink:0;">${c.ts}</span>
-        <span class="tag" style="font-size:10px;">${(INSTRUMENT_CONFIG[c.instr]||{label:c.instr}).label}</span>
-        <span style="font-family:var(--mono);color:var(--blue);font-weight:700;">${c.lots} lots</span>
-        <span style="color:var(--red);">−$${c.risk}</span>
-        <span style="color:var(--text3);">SL ${c.sl}p</span>
-        ${c.tp?`<span style="color:var(--green);">TP ${c.tp}p</span>`:''}
-        <span style="color:var(--text3);">${c.riskPct}%</span>
-      </div>`).join('') + `</div>`;
-}
-
-function renderStudy(){
-  const all = (state.studyEntries || []);
-  const filter = state.studyFilter || 'All';
-  const filtered = filter === 'All' ? all : all.filter(e => e.sessionType === filter);
-  const sorted = filtered.slice().sort((a,b)=>b.date.localeCompare(a.date));
-
-  // Stats bar
-  const statsEl = document.getElementById('study-stats');
-  if(statsEl){
-    statsEl.innerHTML = `
-      <div class="period-stat"><div class="ps-label">Total Entries</div><div class="ps-val blue">${sorted.length}</div></div>
-      <div class="period-stat"><div class="ps-label">With Screenshots</div><div class="ps-val green">${sorted.filter(e=>e.screenshot).length}</div></div>
-      <div class="period-stat"><div class="ps-label">Sessions</div><div class="ps-val gold">${[...new Set(sorted.map(e=>e.sessionType))].length}</div></div>`;
-  }
-
-  const listEl = document.getElementById('study-list');
-  if(!listEl) return;
-
-  if(!sorted.length){
-    listEl.innerHTML = `<div style="text-align:center;padding:60px 20px;color:var(--text3);">
-      <div style="font-size:48px;margin-bottom:16px;">📚</div>
-      <div style="font-size:16px;font-weight:600;margin-bottom:8px;">No study entries yet</div>
-      <div style="font-size:13px;margin-bottom:20px;">Log your market analysis, session observations and chart notes.</div>
-      <button class="btn btn-primary" onclick="openStudyEntry(null)">+ Add Entry</button>
-    </div>`;
-    return;
-  }
-
-  listEl.innerHTML = sorted.map(e=>{
-    const sc = STUDY_SESSION_COLORS[e.sessionType] || STUDY_SESSION_COLORS['Daily'];
-    const badgeStyle = `background:${sc.bg};color:${sc.color};border:1px solid ${sc.border};`;
-    return `
-    <div class="study-entry-card" id="study-card-${e.id}">
-      <div class="study-entry-header" onclick="toggleStudyEntry('${e.id}')">
-        <span class="study-entry-date">${e.date}</span>
-        <span class="study-entry-session-badge" style="${badgeStyle}">${e.sessionType||'—'}</span>
-        <span class="study-entry-title">${escHtml(e.title||'Untitled')}</span>
-        <div class="study-entry-actions">
-          <button class="btn btn-ghost btn-sm" onclick="event.stopPropagation();openStudyEntry('${e.id}')">✏️ Edit</button>
-          <button class="btn btn-danger btn-sm" onclick="event.stopPropagation();deleteStudyEntry('${e.id}')">🗑</button>
-        </div>
-      </div>
-      <div class="study-entry-body" id="study-body-${e.id}">
-        <div class="study-body-grid">
-          <div>
-            <div class="study-field-label">Description / Notes</div>
-            <div class="study-field-val">${escHtml(e.description||'—')}</div>
-          </div>
-          ${e.screenshot ? `
-          <div class="study-screenshot-wrap" style="grid-column:unset;">
-            <div class="study-field-label">Chart Screenshot</div>
-            <img class="study-screenshot-img" src="${e.screenshot}" alt="Chart screenshot"
-              onclick="openStudyLightbox('${e.id}')" title="Click to expand">
-          </div>` : '<div></div>'}
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function escHtml(s){
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-function toggleStudyEntry(id){
-  const body = document.getElementById('study-body-'+id);
-  if(body) body.classList.toggle('open');
-}
-
-function deleteStudyEntry(id){
-  if(!confirm('Delete this study entry?')) return;
-  state.studyEntries = (state.studyEntries||[]).filter(e=>e.id!==id);
-  saveState();
-  renderStudy();
-}
-
-function openStudyEntry(id){
-  const e = id ? (state.studyEntries||[]).find(x=>x.id===id) : null;
-  const panel = document.getElementById('side-panel');
-  if(panel) panel.classList.add('study-panel-wide');
-
-  document.getElementById('panel-title').textContent = e ? 'Edit Study Entry' : 'Add Study Entry';
-  const sessionOpts = STUDY_SESSIONS.map(s=>`<option value="${s}" ${e&&e.sessionType===s?'selected':''}>${s}</option>`).join('');
-
-  document.getElementById('panel-body').innerHTML = `
-    <div class="form-grid">
-
-      <div class="form-group">
-        <label class="form-label">Date</label>
-        <input type="date" id="fs-date" value="${e?e.date:new Date().toISOString().split('T')[0]}" style="width:100%;">
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">Session / Type</label>
-        <select id="fs-session" style="width:100%;">${sessionOpts}</select>
-      </div>
-
-      <div class="form-group full">
-        <label class="form-label">Title</label>
-        <input type="text" id="fs-title" value="${e?escHtml(e.title||''):''}" placeholder="e.g. London Open — GBPUSD OB Retest" style="width:100%;">
-      </div>
-
-      <div class="form-group full">
-        <label class="form-label">Description</label>
-        <textarea id="fs-description" style="width:100%;min-height:200px;resize:vertical;">${e?escHtml(e.description||''):''}</textarea>
-      </div>
-
-      <div class="form-group full">
-        <label class="form-label">Chart Screenshot</label>
-        ${e&&e.screenshot?`
-          <div style="margin-bottom:10px;">
-            <img src="${e.screenshot}" style="max-width:100%;max-height:260px;border-radius:10px;border:1px solid var(--border2);cursor:zoom-in;display:block;"
-              onclick="openStudyLightboxDirect(this.src)" title="Click to expand">
-            <button type="button" class="btn btn-danger btn-sm" style="margin-top:8px;" onclick="clearStudyScreenshot()">✕ Remove screenshot</button>
-          </div>`:''}
-        <div class="screenshot-upload" id="fs-upload-btn" onclick="document.getElementById('fs-img-file').click()"
-          style="display:${e&&e.screenshot?'none':'flex'};">📷 Upload Chart Screenshot</div>
-        <input type="file" id="fs-img-file" accept="image/*" style="display:none" onchange="handleStudyImg(this)">
-        <input type="hidden" id="fs-screenshot" value="${e?e.screenshot||'':''}">
-      </div>
-
-    </div>
-    <div class="form-actions">
-      <button class="btn btn-ghost" onclick="closePanel();removePanelWide()">Cancel</button>
-      <button class="btn btn-primary" onclick="saveStudyEntry('${id||''}')">💾 Save Entry</button>
-    </div>`;
-  openPanel();
-}
-
-function removePanelWide(){
-  const panel = document.getElementById('side-panel');
-  if(panel) panel.classList.remove('study-panel-wide');
-}
-
-function handleStudyImg(input){
-  const file = input.files[0];
-  if(!file) return;
-  const reader = new FileReader();
-  reader.onload = ev => {
-    document.getElementById('fs-screenshot').value = ev.target.result;
-    const btn = document.getElementById('fs-upload-btn');
-    if(btn) btn.style.display = 'none';
-    // Show inline preview in form
-    const existing = document.querySelector('#panel-body .fs-preview-img');
-    if(existing) existing.remove();
-    const img = document.createElement('img');
-    img.className = 'fs-preview-img';
-    img.src = ev.target.result;
-    img.style.cssText = 'max-width:100%;max-height:220px;border-radius:10px;border:1px solid var(--border2);margin-top:8px;display:block;cursor:zoom-in;';
-    img.title = 'Click to expand';
-    img.onclick = () => openStudyLightboxDirect(img.src);
-    btn.parentNode.insertBefore(img, btn.nextSibling);
-  };
-  reader.readAsDataURL(file);
-}
-
-function clearStudyScreenshot(){
-  document.getElementById('fs-screenshot').value = '';
-  const btn = document.getElementById('fs-upload-btn');
-  if(btn) btn.style.display = 'flex';
-  // Remove any preview images
-  document.querySelectorAll('#panel-body .fs-preview-img, #panel-body img').forEach(img=>{
-    if(img.id !== 'study-lightbox-img') img.parentElement.removeChild(img);
-  });
-  // Remove remove button
-  document.querySelectorAll('#panel-body .btn-danger').forEach(b=>{ if(b.textContent.includes('Remove screenshot')) b.remove(); });
-}
-
-function saveStudyEntry(id){
-  const date = document.getElementById('fs-date').value;
-  const sessionType = document.getElementById('fs-session').value;
-  const title = document.getElementById('fs-title').value.trim();
-  const description = document.getElementById('fs-description').value;
-  const screenshot = document.getElementById('fs-screenshot').value;
-
-  if(!date){ alert('Please select a date.'); return; }
-  if(!title){ alert('Please enter a title.'); return; }
-
-  const entry = {
-    id: id || ('st'+Date.now()),
-    date, sessionType, title, description, screenshot,
-  };
-
-  if(!state.studyEntries) state.studyEntries = [];
-  if(id){ state.studyEntries = state.studyEntries.map(x=>x.id===id?entry:x); }
-  else  { state.studyEntries.push(entry); }
-
-  saveState();
-  closePanel();
-  removePanelWide();
-  renderStudy();
-}
-
-function openStudyLightbox(id){
-  const e = (state.studyEntries||[]).find(x=>x.id===id);
-  if(!e||!e.screenshot) return;
-  openStudyLightboxDirect(e.screenshot);
-}
-
-function openStudyLightboxDirect(src){
-  const lb = document.getElementById('study-lightbox');
-  const img = document.getElementById('study-lightbox-img');
-  if(!lb||!img) return;
-  img.src = src;
-  lb.style.display = 'flex';
-  document.body.style.overflow = 'hidden';
-}
-
-function closeStudyLightbox(){
-  const lb = document.getElementById('study-lightbox');
-  if(lb) lb.style.display = 'none';
-  document.body.style.overflow = '';
-}
-
-document.addEventListener('keydown', function(e){
-  if(e.key === 'Escape'){
-    const lb = document.getElementById('study-lightbox');
-    if(lb && lb.style.display === 'flex') closeStudyLightbox();
-  }
-});
-
-
-
-// ═══════════════════════════════════════════════════════════
-// MT5 CSV / HTML IMPORTER
-// ═══════════════════════════════════════════════════════════
-let mt5ParsedRows = [];   // all parsed, pre-duplicate-checked rows
-let mt5FinalRows  = [];   // rows after dup check, shown in preview
-
-function openMt5Import(){
-  // Populate account selector
-  const sel = document.getElementById('mt5-target-account');
-  if(sel){
-    const accts = state.accounts||[];
-    sel.innerHTML = '<option value="">— No account (unlinked) —</option>' +
-      accts.map(a=>`<option value="${a.id}">${a.name}</option>`).join('');
-    // Default: current active account
-    if(state.activeAccountId) sel.value = state.activeAccountId;
-  }
-  mt5ShowStep('upload');
-  document.getElementById('mt5-modal-overlay').style.display = 'block';
-  document.body.style.overflow = 'hidden';
-}
-
-function closeMt5Import(){
-  document.getElementById('mt5-modal-overlay').style.display = 'none';
-  document.body.style.overflow = '';
-  // Reset file input
-  const fi = document.getElementById('mt5-file-input');
-  if(fi) fi.value = '';
-  mt5ParsedRows = [];
-  mt5FinalRows  = [];
-}
-
-function mt5ShowStep(step){
-  ['upload','preview','done'].forEach(s=>{
-    const el = document.getElementById('mt5-step-'+s);
-    if(el) el.style.display = s===step ? 'block' : 'none';
-  });
-}
-
-function mt5BackToUpload(){
-  mt5ShowStep('upload');
-  const fi = document.getElementById('mt5-file-input');
-  if(fi) fi.value = '';
-}
-
-// ── Drag & Drop ──────────────────────────────────────────
-function mt5HandleDrop(e){
-  e.preventDefault();
-  document.getElementById('mt5-dropzone').style.borderColor = '';
-  const file = e.dataTransfer.files[0];
-  if(file) mt5HandleFile(file);
-}
-
-// ── File entry point ─────────────────────────────────────
-function mt5HandleFile(file){
-  if(!file) return;
-  const name = file.name.toLowerCase();
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const text = ev.target.result;
-    try{
-      if(name.endsWith('.csv')){
-        mt5ParsedRows = mt5ParseCSV(text);
-      } else if(name.endsWith('.html')||name.endsWith('.htm')){
-        mt5ParsedRows = mt5ParseHTML(text);
-      } else {
-        alert('Unsupported file type. Please use a CSV or HTML MT5 report.');
-        return;
-      }
-      mt5BuildPreview();
-    } catch(err){
-      alert('Could not parse file: ' + err.message);
-      console.error(err);
-    }
-  };
-  reader.readAsText(file, 'utf-8');
-}
-
-// ── CSV Parser ───────────────────────────────────────────
-function mt5ParseCSV(text){
-  // Normalise line endings
-  const lines = text.replace(/\r\n/g,'\n').replace(/\r/g,'\n').split('\n');
-
-  // Find the header row (contains "Ticket" or "Order")
-  let headerIdx = -1;
-  let headers = [];
-  for(let i=0;i<lines.length;i++){
-    const cols = mt5SplitCSVLine(lines[i]);
-    const joined = cols.join(' ').toLowerCase();
-    if(joined.includes('ticket')||joined.includes('order')||joined.includes('open time')){
-      headerIdx = i;
-      headers = cols.map(h=>h.trim().toLowerCase().replace(/["\s]+/g,'_'));
-      break;
-    }
-  }
-  if(headerIdx < 0) throw new Error('Could not find header row. Make sure you exported the "Deals" or "History" table.');
-
-  const rows = [];
-  for(let i=headerIdx+1;i<lines.length;i++){
-    const line = lines[i].trim();
-    if(!line) continue;
-    const cols = mt5SplitCSVLine(lines[i]);
-    if(cols.length < 5) continue;
-
-    const obj = {};
-    headers.forEach((h,idx)=>{ obj[h] = (cols[idx]||'').trim().replace(/^"|"$/g,''); });
-
-    const mapped = mt5MapRow(obj);
-    if(mapped) rows.push(mapped);
-  }
-  return rows;
-}
-
-function mt5SplitCSVLine(line){
-  // Handle quoted fields with commas inside
-  const result = [];
-  let cur = '', inQ = false;
-  for(let i=0;i<line.length;i++){
-    const c = line[i];
-    if(c==='"'){ inQ = !inQ; }
-    else if((c===','||c==='\t') && !inQ){ result.push(cur); cur=''; }
-    else { cur += c; }
-  }
-  result.push(cur);
-  return result;
-}
-
-// ── HTML Parser ──────────────────────────────────────────
-function mt5ParseHTML(text){
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(text, 'text/html');
-
-  // MT5 HTML report has multiple tables; find the one with trade data
-  // Look for a table with "Ticket" in a header
-  let targetTable = null;
-  const tables = doc.querySelectorAll('table');
-  for(const tbl of tables){
-    const firstRow = tbl.querySelector('tr');
-    if(!firstRow) continue;
-    const text2 = firstRow.textContent.toLowerCase();
-    if(text2.includes('ticket')||text2.includes('order')||text2.includes('open time')){
-      targetTable = tbl;
-      break;
-    }
-  }
-  if(!targetTable){
-    // Try any table with enough columns
-    for(const tbl of tables){
-      const rows = tbl.querySelectorAll('tr');
-      if(rows.length > 2 && rows[0].querySelectorAll('th,td').length >= 8){
-        targetTable = tbl;
-        break;
-      }
-    }
-  }
-  if(!targetTable) throw new Error('No trade table found in HTML report.');
-
-  const rows = targetTable.querySelectorAll('tr');
-  if(rows.length < 2) throw new Error('Table has no data rows.');
-
-  // Build header map
-  const headerCells = rows[0].querySelectorAll('th,td');
-  const headers = Array.from(headerCells).map(c=>
-    c.textContent.trim().toLowerCase().replace(/[\s\/]+/g,'_').replace(/[()]+/g,'')
-  );
-
-  const result = [];
-  for(let i=1;i<rows.length;i++){
-    const cells = rows[i].querySelectorAll('td');
-    if(cells.length < 5) continue;
-    const obj = {};
-    headers.forEach((h,idx)=>{
-      obj[h] = cells[idx] ? cells[idx].textContent.trim() : '';
-    });
-    const mapped = mt5MapRow(obj);
-    if(mapped) result.push(mapped);
-  }
-  return result;
-}
-
-// ── Row mapper: MT5 columns → dashboard trade object ─────
-function mt5MapRow(obj){
-  // Try multiple possible column name variations MT5 uses
-  function g(...keys){
-    for(const k of keys){
-      const v = obj[k]||obj[k.replace(/ /g,'_')]||obj[k.toLowerCase()]||obj[k.toLowerCase().replace(/ /g,'_')];
-      if(v !== undefined && v !== '') return v.trim();
-    }
-    return '';
-  }
-
-  const ticket  = g('ticket','order','deal','#');
-  const openDT  = g('open_time','time','open time','entry_time','opentime');
-  const type    = g('type','direction','action');
-  const lots    = g('volume','lots','size','qty');
-  const symbol  = g('symbol','item','instrument','pair');
-  const openPx  = g('open_price','price','entry','open price','entry_price');
-  const closePx = g('close_price','exit','exit_price','close price','close_price','price_2');
-  const sl      = g('s/l','sl','stop_loss','stoploss','stop loss');
-  const tp      = g('t/p','tp','take_profit','takeprofit','take profit');
-  const comm    = g('commission','commissions','comm');
-  const swap    = g('swap');
-  const profit  = g('profit','pnl','p&l','pl','net_profit','gross_profit');
-  const closeDT = g('close_time','close time','exit_time','closetime');
-  const comment = g('comment','comments','remark');
-
-  // Must have a symbol and a profit value
-  if(!symbol && !profit) return null;
-
-  // Skip deposit/withdrawal/balance rows
-  const typeL = type.toLowerCase();
-  if(['balance','credit','deposit','withdrawal','correction'].some(x=>typeL.includes(x))) return null;
-  // Skip if type is not a trade direction (buy/sell)
-  if(type && !['buy','sell','buy_stop','sell_stop','buy_limit','sell_limit','in','out','in/out'].some(x=>typeL.includes(x))) return null;
-
-  // Parse date from open_time: "2024.01.15 09:30:00" or "2024-01-15 09:30"
-  let date = '', entryTime = '', exitTime = '';
-  if(openDT){
-    const m = openDT.match(/(\d{4})[.\-\/](\d{2})[.\-\/](\d{2})\s*(\d{2}:\d{2})?/);
-    if(m){
-      date      = `${m[1]}-${m[2]}-${m[3]}`;
-      entryTime = m[4] || '';
-    }
-  }
-  if(closeDT){
-    const m = closeDT.match(/\d{4}[.\-\/]\d{2}[.\-\/]\d{2}\s*(\d{2}:\d{2})?/);
-    if(m) exitTime = m[1]||'';
-  }
-
-  // Normalise symbol: "EURUSD.m" → "EURUSD", "XAUUSDm" → "XAUUSD"
-  const pair = symbol.replace(/[._\-][a-z]$/i,'').toUpperCase();
-
-  // P&L: include commission and swap
-  const pnlRaw  = parseFloat(profit.replace(/,/g,''))||0;
-  const commRaw = parseFloat(comm.replace(/,/g,''))||0;
-  const swapRaw = parseFloat(swap.replace(/,/g,''))||0;
-  const pnl = parseFloat((pnlRaw + commRaw + swapRaw).toFixed(2));
-
-  // Result
-  const result = pnl > 0 ? 'Win' : pnl < 0 ? 'Loss' : 'BE';
-
-  // Detect direction
-  let direction = '';
-  if(typeL.includes('buy')) direction = 'Buy';
-  else if(typeL.includes('sell')) direction = 'Sell';
-
-  return {
-    _ticket:    ticket,       // kept for dup detection, not stored in state
-    _rawProfit: pnlRaw,
-    _comm:      commRaw,
-    _swap:      swapRaw,
-    _direction: direction,
-    _lots:      lots,
-    // dashboard trade fields:
-    date,
-    pair,
-    entryTime,
-    exitTime,
-    entryPrice: openPx,
-    exitPrice:  closePx,
-    stopLoss:   sl,
-    pnl,
-    result,
-    notes:      comment ? `MT5: ${comment}` : 'Imported from MT5',
-  };
-}
-
-// ── Duplicate detection ──────────────────────────────────
-function mt5CheckDuplicate(row){
-  const mode = (document.getElementById('mt5-dup-mode')||{}).value || 'ticket';
-  if(mode === 'none') return false;
-
-  if(mode === 'ticket' && row._ticket){
-    return (state.trades||[]).some(t=>
-      t.mt5Ticket && t.mt5Ticket === row._ticket
-    );
-  }
-  if(mode === 'date_pair_pnl'){
-    return (state.trades||[]).some(t=>
-      t.date === row.date &&
-      t.pair === row.pair &&
-      Math.abs((parseFloat(t.pnl)||0) - row.pnl) < 0.01
-    );
-  }
-  return false;
-}
-
-// ── Build preview table ──────────────────────────────────
-function mt5BuildPreview(){
-  if(!mt5ParsedRows.length){
-    alert('No tradeable rows found in the file. Check the format and try again.');
-    return;
-  }
-
-  // Mark duplicates
-  mt5FinalRows = mt5ParsedRows.map(r=>({
-    ...r,
-    _isDup: mt5CheckDuplicate(r),
-    _import: true,
-  }));
-
-  const dups    = mt5FinalRows.filter(r=>r._isDup).length;
-  const newRows = mt5FinalRows.filter(r=>!r._isDup).length;
-
-  // Summary
-  const sumEl = document.getElementById('mt5-parse-summary');
-  sumEl.innerHTML = `<div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:4px;">
-    <div style="background:var(--green-dim);border:1px solid rgba(0,212,138,0.3);border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;color:var(--green);">✓ ${newRows} new trades</div>
-    ${dups?`<div style="background:var(--gold-dim);border:1px solid rgba(255,209,102,0.3);border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;color:var(--gold);">⚠ ${dups} duplicates (pre-checked out)</div>`:''}
-    <div style="background:var(--glass2);border:1px solid var(--border);border-radius:8px;padding:8px 16px;font-size:13px;color:var(--text2);">${mt5FinalRows.length} total rows parsed</div>
-  </div>`;
-
-  if(dups){
-    const bar = document.getElementById('mt5-conflict-bar');
-    bar.style.display = 'block';
-    bar.innerHTML = `⚠️ ${dups} trade${dups>1?'s are':' is'} already in your journal (matched by ${(document.getElementById('mt5-dup-mode')||{}).value||'ticket'}). They are unchecked below — you can re-check them to force import anyway.`;
-  } else {
-    document.getElementById('mt5-conflict-bar').style.display = 'none';
-  }
-
-  // Uncheck dups by default
-  mt5FinalRows.forEach(r=>{ if(r._isDup) r._import = false; });
-
-  mt5RenderPreviewTable();
-  mt5UpdateSelectedCount();
-  mt5ShowStep('preview');
-}
-
-function mt5RenderPreviewTable(){
-  const tbody = document.getElementById('mt5-preview-tbody');
-  tbody.innerHTML = mt5FinalRows.map((r,i)=>{
-    const pnlColor = r.pnl>0?'var(--green)':r.pnl<0?'var(--red)':'var(--text2)';
-    const dupLabel = r._isDup
-      ? `<span style="font-size:10px;background:var(--gold-dim);color:var(--gold);border:1px solid rgba(255,209,102,0.35);padding:1px 6px;border-radius:10px;font-weight:700;">DUP</span>`
-      : `<span style="font-size:10px;background:var(--green-dim);color:var(--green);border:1px solid rgba(0,212,138,0.35);padding:1px 6px;border-radius:10px;font-weight:700;">NEW</span>`;
-    const rowStyle = r._isDup ? 'opacity:.55;' : '';
-    return `<tr style="${rowStyle}border-bottom:1px solid rgba(255,255,255,0.04);" id="mt5-row-${i}">
-      <td style="padding:9px 12px;">
-        <input type="checkbox" ${r._import?'checked':''} onchange="mt5ToggleRow(${i},this.checked)" style="accent-color:var(--blue);cursor:pointer;">
-      </td>
-      <td style="padding:9px 12px;">${dupLabel}</td>
-      <td style="padding:9px 12px;font-family:var(--mono);font-size:11px;color:var(--text3);">${r._ticket||'—'}</td>
-      <td style="padding:9px 12px;font-family:var(--mono);font-size:11px;white-space:nowrap;">${r.date} ${r.entryTime||''}</td>
-      <td style="padding:9px 12px;font-weight:700;">${r.pair}</td>
-      <td style="padding:9px 12px;font-size:11px;color:${r._direction==='Buy'?'var(--green)':'var(--red)'};">${r._direction||'—'}</td>
-      <td style="padding:9px 12px;font-family:var(--mono);font-size:11px;">${r._lots||'—'}</td>
-      <td style="padding:9px 12px;font-family:var(--mono);font-size:11px;">${r.entryPrice||'—'}</td>
-      <td style="padding:9px 12px;font-family:var(--mono);font-size:11px;">${r.exitPrice||'—'}</td>
-      <td style="padding:9px 12px;font-family:var(--mono);font-size:11px;">${r.stopLoss||'—'}</td>
-      <td style="padding:9px 12px;font-family:var(--mono);font-size:11px;">—</td>
-      <td style="padding:9px 12px;font-family:var(--mono);font-size:12px;font-weight:700;text-align:right;color:${pnlColor};">${r.pnl>=0?'+':''}$${Math.abs(r.pnl).toFixed(2)}</td>
-    </tr>`;
-  }).join('');
-}
-
-function mt5ToggleRow(i, checked){
-  mt5FinalRows[i]._import = checked;
-  const row = document.getElementById('mt5-row-'+i);
-  if(row) row.style.opacity = checked ? '1' : '.55';
-  mt5UpdateSelectedCount();
-}
-
-function mt5ToggleAll(checked){
-  mt5FinalRows.forEach((_,i)=>{ mt5FinalRows[i]._import = checked; });
-  mt5RenderPreviewTable();
-  mt5UpdateSelectedCount();
-}
-
-function mt5UpdateSelectedCount(){
-  const sel = mt5FinalRows.filter(r=>r._import).length;
-  const el = document.getElementById('mt5-selected-count');
-  if(el) el.textContent = `${sel} trade${sel!==1?'s':''} selected`;
-  const btn = document.getElementById('mt5-confirm-btn');
-  if(btn) btn.disabled = sel === 0;
-}
-
-// ── Confirm & import ────────────────────────────────────
-function mt5ConfirmImport(){
-  const toImport = mt5FinalRows.filter(r=>r._import);
-  if(!toImport.length){ alert('No trades selected.'); return; }
-
-  const accountId = (document.getElementById('mt5-target-account')||{}).value || null;
-
-  let importedCount = 0;
-  toImport.forEach(r=>{
-    const trade = {
-      id:         'mt5_' + (r._ticket || Date.now() + '_' + Math.random().toString(36).slice(2,6)),
-      mt5Ticket:  r._ticket || '',
-      accountId:  accountId || null,
-      date:       r.date,
-      pair:       r.pair,
-      entryTime:  r.entryTime,
-      exitTime:   r.exitTime,
-      entryPrice: r.entryPrice,
-      exitPrice:  r.exitPrice,
-      stopLoss:   r.stopLoss,
-      pnl:        r.pnl,
-      result:     r.result,
-      notes:      r.notes,
-      // MT5 extras stored for reference
-      model:      '',
-      session:    '',
-      emotionalState: '',
-      rating:     '',
-      setup:      '',
-      confluences:'',
-      management: '',
-      screenshot: '',
-      commission: String(r._comm||0),
-      riskChecklist:{}, tradeChecklist:{}, htfChecklist:{},
-    };
-    if(!state.trades) state.trades = [];
-    state.trades.push(trade);
-    importedCount++;
-  });
-
-  saveState();
-  renderJournal();
-  renderDashboard();
-  updateAccountDisplay();
-  const accPage = document.getElementById('page-accounts');
-  if(accPage && accPage.classList.contains('active')){ renderAccounts(); renderTimeAnalysis(); }
-
-  // Show done screen
-  document.getElementById('mt5-done-title').textContent = `${importedCount} Trade${importedCount!==1?'s':''} Imported!`;
-  const skipped = mt5FinalRows.length - toImport.length;
-  document.getElementById('mt5-done-sub').textContent =
-    `${importedCount} trades added to your journal${skipped?' · '+skipped+' skipped':''}. You can edit any trade individually to add notes, emotions, and screenshots.`;
-  mt5ShowStep('done');
-}
-
-// Close modal on overlay click — deferred so the element exists
-function mt5BindOverlay(){
-  const overlay = document.getElementById('mt5-modal-overlay');
-  if(overlay) overlay.addEventListener('click', function(e){
-    if(e.target === this) closeMt5Import();
-  });
 }
 
 function refreshAcctSelectorLabel(){
@@ -5792,16 +3644,6 @@ document.addEventListener('click', function(){ closeAcctDropdown(); });
 
 loadState().then(()=>{
 
-// ── After state loads: check if user is not logged in, seed preview & show auth ──
-const _authSession = getSession();
-const _authUsers = getAuthUsers();
-const _hasValidSession = _authSession && _authUsers[_authSession.email];
-
-if(!_hasValidSession){
-  // Seed preview data so the dashboard background looks alive
-  seedPreviewBackground();
-}
-
 updateAccountDisplay();
 renderDashboard();
 renderAccounts();
@@ -5825,12 +3667,10 @@ renderJournalAccountSelector();
 })();
 renderPremarket();
 renderReflections();
-renderStudy();
 renderSystem();
-refreshPairDropdowns();
 renderGoals();
 
-// First-run: open Add Account panel
+// First-run: open Add Account panel if no accounts and no legacy account set
 if(!(state.accounts||[]).length && !state.accountName){
   setTimeout(()=>{ openAccountForm(null); }, 400);
 }
@@ -5918,142 +3758,8 @@ if(!(state.goals||[]).length){
   }
 })();
 
-// Saved accounts panel removed
-
 }); // end loadState().then()
 
 </script>
-
-<!-- ═══════════════════════════════════════════════
-     MT5 IMPORT MODAL
-═══════════════════════════════════════════════ -->
-<div id="mt5-modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:1000;backdrop-filter:blur(6px);overflow-y:auto;padding:24px 16px;">
-  <div id="mt5-modal" style="max-width:900px;margin:0 auto;background:#0d1220;border:1px solid var(--border2);border-radius:20px;overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,0.8);">
-
-    <!-- Header -->
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:22px 28px;border-bottom:1px solid var(--border);background:rgba(255,209,102,0.05);">
-      <div>
-        <div style="font-size:18px;font-weight:700;display:flex;align-items:center;gap:10px;">
-          <span style="font-size:22px;">📥</span> Import MT5 Trades
-        </div>
-        <div style="font-size:12px;color:var(--text3);margin-top:3px;">Account History → right-click → Save as Report → CSV or HTML</div>
-      </div>
-      <button onclick="closeMt5Import()" style="background:none;border:none;color:var(--text3);font-size:26px;cursor:pointer;line-height:1;padding:4px;">✕</button>
-    </div>
-
-    <!-- Body -->
-    <div style="padding:28px;" id="mt5-modal-body">
-
-      <!-- Step 1: Upload -->
-      <div id="mt5-step-upload">
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px;">
-
-          <!-- Drop zone -->
-          <div id="mt5-dropzone"
-            onclick="document.getElementById('mt5-file-input').click()"
-            ondragover="event.preventDefault();this.style.borderColor='var(--gold)'"
-            ondragleave="this.style.borderColor=''"
-            ondrop="mt5HandleDrop(event)"
-            style="border:2px dashed var(--border2);border-radius:14px;padding:36px 20px;text-align:center;cursor:pointer;transition:border-color .2s;grid-column:1/-1;">
-            <div style="font-size:40px;margin-bottom:10px;">📄</div>
-            <div style="font-size:15px;font-weight:600;margin-bottom:6px;">Drop your MT5 report here</div>
-            <div style="font-size:12px;color:var(--text3);margin-bottom:14px;">Supports: <strong style="color:var(--text2);">CSV</strong> and <strong style="color:var(--text2);">HTML</strong> reports</div>
-            <button class="btn btn-ghost btn-sm" style="pointer-events:none;border-color:var(--gold);color:var(--gold);">Browse file…</button>
-            <input type="file" id="mt5-file-input" accept=".csv,.html,.htm" style="display:none" onchange="mt5HandleFile(this.files[0])">
-          </div>
-
-        </div>
-
-        <!-- Account mapping -->
-        <div style="background:var(--glass2);border:1px solid var(--border);border-radius:12px;padding:18px 20px;margin-bottom:20px;">
-          <div style="font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:8px;"><span>🏦</span> Map to Account</div>
-          <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
-            <div style="flex:1;min-width:200px;">
-              <label style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px;">Target Account</label>
-              <select id="mt5-target-account" style="width:100%;">
-                <option value="">— No account (unlinked) —</option>
-              </select>
-            </div>
-            <div style="flex:1;min-width:200px;">
-              <label style="font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px;">Duplicate Detection</label>
-              <select id="mt5-dup-mode" style="width:100%;">
-                <option value="ticket">By Ticket Number (recommended)</option>
-                <option value="date_pair_pnl">By Date + Pair + P&L</option>
-                <option value="none">Skip — import all</option>
-              </select>
-            </div>
-          </div>
-        </div>
-
-        <!-- Instructions -->
-        <div style="background:rgba(77,159,255,0.07);border:1px solid rgba(77,159,255,0.2);border-radius:10px;padding:14px 16px;font-size:12px;color:var(--text2);line-height:1.8;">
-          <strong style="color:var(--blue);">How to export from MT5:</strong><br>
-          1. Open MetaTrader 5 → <em>View → Terminal</em> (Ctrl+T)<br>
-          2. Click the <strong>Account History</strong> tab<br>
-          3. Right-click anywhere in the table → <strong>Save as Report</strong><br>
-          4. Choose <strong>CSV format</strong> (or HTML) → Save → upload here
-        </div>
-      </div>
-
-      <!-- Step 2: Preview -->
-      <div id="mt5-step-preview" style="display:none;">
-        <div id="mt5-parse-summary" style="margin-bottom:16px;"></div>
-
-        <!-- Conflict/skip info -->
-        <div id="mt5-conflict-bar" style="display:none;background:rgba(255,209,102,0.08);border:1px solid rgba(255,209,102,0.25);border-radius:10px;padding:12px 16px;font-size:13px;color:var(--gold);margin-bottom:16px;"></div>
-
-        <!-- Preview table -->
-        <div style="overflow-x:auto;border:1px solid var(--border);border-radius:12px;margin-bottom:20px;">
-          <table style="width:100%;border-collapse:collapse;font-size:12px;" id="mt5-preview-table">
-            <thead>
-              <tr style="border-bottom:1px solid var(--border);">
-                <th style="padding:10px 12px;text-align:left;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;">
-                  <label style="display:flex;align-items:center;gap:6px;cursor:pointer;">
-                    <input type="checkbox" id="mt5-check-all" onchange="mt5ToggleAll(this.checked)" checked style="accent-color:var(--blue);">
-                    Import
-                  </label>
-                </th>
-                <th style="padding:10px 12px;text-align:left;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Status</th>
-                <th style="padding:10px 12px;text-align:left;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Ticket</th>
-                <th style="padding:10px 12px;text-align:left;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Date</th>
-                <th style="padding:10px 12px;text-align:left;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Pair</th>
-                <th style="padding:10px 12px;text-align:left;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Type</th>
-                <th style="padding:10px 12px;text-align:left;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Lots</th>
-                <th style="padding:10px 12px;text-align:left;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Entry</th>
-                <th style="padding:10px 12px;text-align:left;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">Exit</th>
-                <th style="padding:10px 12px;text-align:left;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">S/L</th>
-                <th style="padding:10px 12px;text-align:left;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">T/P</th>
-                <th style="padding:10px 12px;text-align:right;font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;">P&L</th>
-              </tr>
-            </thead>
-            <tbody id="mt5-preview-tbody"></tbody>
-          </table>
-        </div>
-
-        <!-- Action buttons -->
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
-          <button class="btn btn-ghost" onclick="mt5BackToUpload()">← Back</button>
-          <div style="display:flex;gap:10px;align-items:center;">
-            <span id="mt5-selected-count" style="font-size:13px;color:var(--text3);"></span>
-            <button class="btn btn-green" id="mt5-confirm-btn" onclick="mt5ConfirmImport()">✓ Import Selected Trades</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 3: Done -->
-      <div id="mt5-step-done" style="display:none;text-align:center;padding:40px 20px;">
-        <div style="font-size:56px;margin-bottom:16px;">✅</div>
-        <div style="font-size:20px;font-weight:700;margin-bottom:8px;" id="mt5-done-title">Trades Imported!</div>
-        <div style="font-size:14px;color:var(--text3);margin-bottom:24px;" id="mt5-done-sub"></div>
-        <div style="display:flex;gap:12px;justify-content:center;">
-          <button class="btn btn-ghost" onclick="mt5BackToUpload()">Import Another File</button>
-          <button class="btn btn-primary" onclick="closeMt5Import();navTo('journal',document.querySelector('[data-page=journal]'))">View Journal →</button>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
 </body>
 </html>
