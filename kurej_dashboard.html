@@ -694,96 +694,7 @@ svg{display:block;}
 .smart-val{color:var(--text2);line-height:1.5;}
 
 /* ── Auth Screen ── */
-#auth-screen{
-  position:fixed;inset:0;z-index:9999;
-  background:rgba(7,11,20,0.10);
-  backdrop-filter:none;
-  -webkit-backdrop-filter:none;
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--sans);
-  overflow:hidden;
-}
-#auth-screen::before{
-  content:'';position:absolute;inset:0;
-  background:none;
-  pointer-events:none;z-index:0;
-}
-.auth-box{
-  width:100%;max-width:420px;
-  background:rgba(10,14,26,0.92);
-  border:1px solid rgba(255,255,255,0.16);
-  border-radius:20px;
-  padding:40px 36px 32px;
-  box-shadow:0 32px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.04) inset;
-  position:relative;z-index:1;
-  animation:authIn .45s cubic-bezier(.4,0,.2,1) both;
-  backdrop-filter:blur(4px);
-}
-@keyframes authIn{from{opacity:0;transform:translateY(28px) scale(.97);}to{opacity:1;transform:none;}}
-.auth-box::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent);
-  border-radius:20px 20px 0 0;
-}
-.auth-logo{
-  display:flex;align-items:center;gap:12px;margin-bottom:32px;
-}
-.auth-logo-mark{
-  width:44px;height:44px;
-  background:linear-gradient(135deg,var(--blue),var(--green));
-  border-radius:12px;
-  display:flex;align-items:center;justify-content:center;
-  font-family:var(--mono);font-weight:700;font-size:18px;color:#fff;
-  box-shadow:0 0 20px rgba(77,159,255,0.35);
-}
-.auth-logo-name{font-size:22px;font-weight:800;letter-spacing:-.3px;}
-.auth-logo-sub{font-size:12px;color:var(--text3);margin-top:1px;}
-.auth-tabs{
-  display:flex;gap:0;
-  background:rgba(255,255,255,0.04);
-  border:1px solid var(--border);
-  border-radius:10px;margin-bottom:28px;overflow:hidden;
-}
-.auth-tab{
-  flex:1;padding:9px;text-align:center;
-  font-size:13px;font-weight:600;cursor:pointer;
-  color:var(--text3);transition:all .2s;
-}
-.auth-tab.active{
-  background:rgba(77,159,255,0.15);
-  color:var(--blue);
-}
-.auth-field{margin-bottom:18px;}
-.auth-label{font-size:12px;font-weight:600;color:var(--text3);margin-bottom:7px;display:block;letter-spacing:.02em;text-transform:uppercase;}
-.auth-input{
-  width:100%;padding:11px 14px;
-  background:rgba(255,255,255,0.05);
-  border:1px solid var(--border2);
-  border-radius:10px;color:var(--text);
-  font-family:var(--sans);font-size:14px;
-  outline:none;transition:border-color .2s,box-shadow .2s;
-}
-.auth-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(77,159,255,0.12);}
-.auth-input::placeholder{color:var(--text3);}
-.auth-remember{
-  display:flex;align-items:center;gap:9px;
-  margin-bottom:24px;cursor:pointer;
-}
-.auth-remember input[type=checkbox]{
-  width:16px;height:16px;accent-color:var(--blue);cursor:pointer;
-}
-.auth-remember-label{font-size:13px;color:var(--text2);}
-.auth-btn{
-  width:100%;padding:13px;
-  background:linear-gradient(135deg,var(--blue),#2d7aff);
-  border:none;border-radius:10px;
-  color:#fff;font-family:var(--sans);font-size:15px;font-weight:700;
-  cursor:pointer;transition:all .2s;
-  box-shadow:0 4px 20px rgba(77,159,255,0.3);
-  letter-spacing:.02em;
-}
-.auth-btn:hover{background:linear-gradient(135deg,var(--blue2),#4d9fff);box-shadow:0 6px 28px rgba(77,159,255,0.45);transform:translateY(-1px);}
-.auth-btn:active{transform:translateY(0);}
+
 .auth-error{
   background:rgba(255,77,109,0.12);
   border:1px solid rgba(255,77,109,0.3);
@@ -1016,162 +927,6 @@ svg{display:block;}
 <!-- ═══════════════════════════════════════════════
      AUTH SCREEN
 ═══════════════════════════════════════════════ -->
-<div id="auth-screen">
-  <div class="auth-box" id="auth-box">
-    <div class="auth-logo">
-      <div class="auth-logo-mark">K</div>
-      <div>
-        <div class="auth-logo-name">Kurej</div>
-        <div class="auth-logo-sub">Trading Performance Dashboard</div>
-      </div>
-    </div>
-
-    <div class="auth-tabs" id="auth-tab-bar">
-      <div class="auth-tab active" id="tab-login" onclick="authShowTab('login')">Log In</div>
-      <div class="auth-tab" id="tab-signup" onclick="authShowTab('signup')">Sign Up</div>
-    </div>
-
-    <!-- Error / Success banners -->
-    <div class="auth-error" id="auth-error"></div>
-    <div class="auth-success" id="auth-success"></div>
-
-    <!-- ── LOG IN FORM ── -->
-    <div id="auth-login-form">
-
-      <div class="auth-field">
-        <label class="auth-label" for="li-user">Email Address</label>
-        <input class="auth-input" type="email" id="li-user" placeholder="Enter your email address" autocomplete="email">
-      </div>
-      <div class="auth-field">
-        <label class="auth-label" for="li-pass">Password</label>
-        <div class="auth-pass-wrap">
-          <input class="auth-input" type="password" id="li-pass" placeholder="Enter your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
-          <button class="auth-pass-toggle" onclick="authTogglePwd('li-pass',this)" tabindex="-1">👁</button>
-        </div>
-      </div>
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
-        <label class="auth-remember" style="margin-bottom:0;">
-          <input type="checkbox" id="li-remember" checked>
-          <span class="auth-remember-label">Remember me</span>
-        </label>
-        <span class="auth-forgot-link" onclick="authShowTab('forgot')">Forgot password?</span>
-      </div>
-      <button class="auth-btn" onclick="doLogin()">Log In →</button>
-    </div>
-
-    <!-- ── SIGN UP FORM ── -->
-    <div id="auth-signup-form" style="display:none;">
-
-      <div class="auth-field">
-        <label class="auth-label" for="su-user">Email Address</label>
-        <input class="auth-input" type="email" id="su-user" placeholder="Enter your email address" autocomplete="email">
-      </div>
-      <div class="auth-field">
-        <label class="auth-label" for="su-pass">Password</label>
-        <div class="auth-pass-wrap">
-          <input class="auth-input" type="password" id="su-pass" placeholder="Create a password (min 6 chars)" autocomplete="new-password" onkeydown="if(event.key==='Enter')doSignup()">
-          <button class="auth-pass-toggle" onclick="authTogglePwd('su-pass',this)" tabindex="-1">👁</button>
-        </div>
-      </div>
-      <div class="auth-field">
-        <label class="auth-label" for="su-pass2">Confirm Password</label>
-        <div class="auth-pass-wrap">
-          <input class="auth-input" type="password" id="su-pass2" placeholder="Repeat your password" autocomplete="new-password" onkeydown="if(event.key==='Enter')doSignup()">
-          <button class="auth-pass-toggle" onclick="authTogglePwd('su-pass2',this)" tabindex="-1">👁</button>
-        </div>
-      </div>
-      <div class="auth-field">
-        <label class="auth-label" for="su-sq-select">Security Question</label>
-        <select class="auth-input" id="su-sq-select" style="cursor:pointer;">
-          <option value="">— Choose a question —</option>
-          <option>What was the name of your first pet?</option>
-          <option>What city were you born in?</option>
-          <option>What is your mother's maiden name?</option>
-          <option>What was the name of your first school?</option>
-          <option>What is your favourite sports team?</option>
-          <option>What was your childhood nickname?</option>
-        </select>
-      </div>
-      <div class="auth-field">
-        <label class="auth-label" for="su-sa-input">Security Answer</label>
-        <input class="auth-input" type="text" id="su-sa-input" placeholder="Your answer (case-insensitive)" autocomplete="off" onkeydown="if(event.key==='Enter')doSignup()">
-      </div>
-      <input type="hidden" id="su-sq" value="">
-      <input type="hidden" id="su-sa" value="">
-      <input type="hidden" id="su-remember" value="true">
-      <button class="auth-btn" onclick="doSignup()">Create Account →</button>
-    </div>
-
-    <!-- ── FORGOT PASSWORD FORM ── -->
-    <div id="auth-forgot-form" style="display:none;">
-      <!-- Step 1: enter email -->
-      <div id="fp-step1">
-        <div style="font-size:13px;color:var(--text2);margin-bottom:20px;line-height:1.6;">
-          Enter your email address and we'll ask you your security question to reset your password.
-        </div>
-        <div class="auth-field">
-          <label class="auth-label" for="fp-email">Email Address</label>
-          <input class="auth-input" type="email" id="fp-email" placeholder="Enter your email address" onkeydown="if(event.key==='Enter')fpStep1()">
-        </div>
-        <button class="auth-btn" onclick="fpStep1()">Continue →</button>
-      </div>
-
-      <!-- Step 2: answer security question -->
-      <div id="fp-step2" style="display:none;">
-        <div style="font-size:13px;color:var(--text2);margin-bottom:6px;">Security Question:</div>
-        <div id="fp-question" style="font-size:14px;font-weight:600;color:var(--text);margin-bottom:18px;padding:10px 14px;background:rgba(255,255,255,0.04);border:1px solid var(--border2);border-radius:8px;"></div>
-        <div class="auth-field">
-          <label class="auth-label" for="fp-answer">Your Answer</label>
-          <input class="auth-input" type="text" id="fp-answer" placeholder="Type your answer" autocomplete="off" onkeydown="if(event.key==='Enter')fpStep2()">
-        </div>
-        <button class="auth-btn" onclick="fpStep2()">Verify Answer →</button>
-      </div>
-
-      <!-- Step 3: set new password -->
-      <div id="fp-step3" style="display:none;">
-        <div style="font-size:13px;color:var(--green);margin-bottom:18px;">✔ Answer verified! Set a new password below.</div>
-        <div class="auth-field">
-          <label class="auth-label" for="fp-newpass">New Password</label>
-          <div class="auth-pass-wrap">
-            <input class="auth-input" type="password" id="fp-newpass" placeholder="New password (min 6 chars)" autocomplete="new-password">
-            <button class="auth-pass-toggle" onclick="authTogglePwd('fp-newpass',this)" tabindex="-1">👁</button>
-          </div>
-        </div>
-        <div class="auth-field">
-          <label class="auth-label" for="fp-newpass2">Confirm New Password</label>
-          <div class="auth-pass-wrap">
-            <input class="auth-input" type="password" id="fp-newpass2" placeholder="Repeat new password" autocomplete="new-password" onkeydown="if(event.key==='Enter')fpStep3()">
-            <button class="auth-pass-toggle" onclick="authTogglePwd('fp-newpass2',this)" tabindex="-1">👁</button>
-          </div>
-        </div>
-        <button class="auth-btn" onclick="fpStep3()">Reset Password →</button>
-      </div>
-
-      <div style="text-align:center;margin-top:18px;">
-        <span class="auth-forgot-link" onclick="authShowTab('login')">← Back to Log In</span>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- Lightbox -->
-<div class="lightbox" id="lightbox" onclick="closeLightbox()">
-  <img id="lightbox-img" src="" alt="">
-</div>
-
-<!-- Panel overlay -->
-<div class="panel-overlay" id="panel-overlay" onclick="closePanel()"></div>
-
-<!-- Side panel (Log Trade / Edit) -->
-<div class="side-panel" id="side-panel">
-  <div class="panel-header">
-    <span class="panel-title" id="panel-title">Log Trade</span>
-    <button class="panel-close" onclick="closePanel()">×</button>
-  </div>
-  <div class="panel-body" id="panel-body"><!-- filled dynamically --></div>
-</div>
-
 <div class="app">
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
@@ -5031,60 +4786,9 @@ async function fpStep3(){
   }, 1400);
 }
 
-// ── Grant access + add logout button ──
+// ── Auth removed — direct access ──
 function authGrantAccess(email){
-  const screen = document.getElementById('auth-screen');
-  screen.style.transition='opacity .5s ease';
-  screen.style.opacity='0';
-
-  // Clear any preview/seed data and reload the real user state
-  const wasPreview = (state.accounts||[]).some(a=>a.id==='preview_ac');
-  if(wasPreview){
-    // Wipe preview state, then reload real data from localStorage
-    state.accounts=[];state.trades=[];state.activeAccountId=null;
-    state.acctSelectorView='all';state.accountName='';state.startingBalance=0;
-    loadState().then(()=>{
-      updateAccountDisplay(); renderDashboard(); renderAccounts();
-      renderJournal(); renderPremarket(); renderReflections(); renderSystem(); refreshPairDropdowns(); renderGoals();
-    });
-  }
-
-  setTimeout(()=>{ screen.style.display='none'; initGistUI(); }, 500);
-
-  const topbarRight = document.querySelector('.topbar-right');
-  if(topbarRight && !document.getElementById('logout-btn')){
-    const logoutBtn = document.createElement('button');
-    logoutBtn.id='logout-btn';
-    logoutBtn.className='btn btn-ghost';
-    logoutBtn.style.cssText='font-size:12px;padding:6px 12px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
-    logoutBtn.title='Click to log out';
-    logoutBtn.innerHTML=`👤 Log Out`;
-    logoutBtn.onclick = ()=>{
-      if(confirm('Are you sure you want to log out?')){
-        clearSession();
-        location.reload();
-      }
-    };
-    topbarRight.prepend(logoutBtn);
-  }
-
-  // If account has no security question, prompt them to set one
-  const users2 = getAuthUsers();
-  if(users2[email] && !users2[email].securityQuestion){
-    setTimeout(()=>{
-      const q = prompt('Your account has no security question set.\n\nPlease type a security question (e.g. "What was the name of your first pet?"):');
-      if(q && q.trim()){
-        const a = prompt('Now enter your answer to: "'+q.trim()+'"\n(Remember this — it is used to reset your password)');
-        if(a && a.trim()){
-          hashPassword(a.trim().toLowerCase()).then(hashedA=>{
-            const u = getAuthUsers();
-            if(u[email]){ u[email].securityQuestion = q.trim(); u[email].securityAnswer = hashedA; saveAuthUsers(u); }
-            alert('Security question saved! You can now use "Forgot password?" to recover your account.');
-          });
-        }
-      }
-    }, 1200);
-  }
+  initGistUI();
 }
 
 // ── Seed preview data so the dashboard renders visibly behind auth ──
@@ -5128,17 +4832,7 @@ function seedPreviewBackground(){
   state.trades = trades;
 }
 
-// ── Auto-login check ──
-(function(){
-  const session = getSession();
-  if(session){
-    const users = getAuthUsers();
-    if(users[session.email]){
-      authGrantAccess(session.email);
-    }
-  }
-  // Auth screen is visible by default; renderSavedUsers called after loadState
-})();
+// Auth removed — no login check needed
 
 function updateAccountDisplay(){
   const accts = state.accounts||[];
@@ -6388,15 +6082,7 @@ document.addEventListener('click', function(){ closeAcctDropdown(); });
 
 loadState().then(()=>{
 
-// ── After state loads: check if user is not logged in, seed preview & show auth ──
-const _authSession = getSession();
-const _authUsers = getAuthUsers();
-const _hasValidSession = _authSession && _authUsers[_authSession.email];
-
-if(!_hasValidSession){
-  // Seed preview data so the dashboard background looks alive
-  seedPreviewBackground();
-}
+// Auth removed — load directly
 
 updateAccountDisplay();
 renderDashboard();
@@ -6426,12 +6112,9 @@ renderSystem();
 refreshPairDropdowns();
 renderGoals();
 
-// First-run: open Add Account panel only when user is already logged in
+// First-run: open Add Account panel
 if(!(state.accounts||[]).length && !state.accountName){
-  const authVisible = document.getElementById('auth-screen') && document.getElementById('auth-screen').style.display !== 'none' && document.getElementById('auth-screen').style.opacity !== '0';
-  if(!authVisible){
-    setTimeout(()=>{ openAccountForm(null); }, 400);
-  }
+  setTimeout(()=>{ openAccountForm(null); }, 400);
 }
 
 // Seed goals from Notion export if none exist yet
