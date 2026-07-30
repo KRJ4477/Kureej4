@@ -694,50 +694,7 @@ svg{display:block;}
 .smart-val{color:var(--text2);line-height:1.5;}
 
 /* ── Auth Screen ── */
-
-.auth-error{
-  background:rgba(255,77,109,0.12);
-  border:1px solid rgba(255,77,109,0.3);
-  border-radius:8px;padding:10px 14px;
-  color:var(--red);font-size:13px;
-  margin-bottom:16px;display:none;
-}
-.auth-success{
-  background:rgba(0,212,138,0.12);
-  border:1px solid rgba(0,212,138,0.3);
-  border-radius:8px;padding:10px 14px;
-  color:var(--green);font-size:13px;
-  margin-bottom:16px;display:none;
-}
-.auth-divider{
-  height:1px;background:var(--border);margin:24px 0;
-}
-.auth-switch{font-size:13px;color:var(--text3);text-align:center;margin-top:18px;}
-.auth-switch span{color:var(--blue);cursor:pointer;font-weight:600;}
-.auth-switch span:hover{text-decoration:underline;}
-.auth-user-chip{
-  display:flex;align-items:center;gap:8px;
-  background:rgba(255,255,255,0.04);
-  border:1px solid var(--border2);border-radius:8px;
-  padding:10px 12px;margin-bottom:18px;
-  font-size:13px;color:var(--text2);
-  cursor:pointer;transition:background .15s;
-}
-.auth-user-chip:hover{background:rgba(255,255,255,0.07);}
-.auth-user-chip-dot{width:8px;height:8px;border-radius:50%;background:var(--green);flex-shrink:0;}
-.auth-users-label{font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:.06em;font-weight:600;}
-.auth-pass-wrap{position:relative;}
-.auth-pass-toggle{
-  position:absolute;right:12px;top:50%;transform:translateY(-50%);
-  background:none;border:none;color:var(--text3);cursor:pointer;
-  font-size:15px;padding:0;line-height:1;
-}
-.auth-pass-toggle:hover{color:var(--text);}
-.auth-forgot-link{
-  font-size:13px;color:var(--blue);cursor:pointer;font-weight:600;
-  transition:opacity .15s;
-}
-.auth-forgot-link:hover{opacity:.75;text-decoration:underline;}
+@keyframes authIn{from{opacity:0;transform:translateY(28px) scale(.97);}to{opacity:1;transform:none;}}
 
 
 /* ── Time-Based Analysis ── */
@@ -889,44 +846,10 @@ svg{display:block;}
   width: min(900px, 100vw) !important;
 }
 
-.auth-google-btn{
-  width:100%;padding:11px 14px;
-  background:#fff;
-  border:1px solid #dadce0;
-  border-radius:10px;
-  color:#3c4043;
-  font-family:var(--sans);font-size:14px;font-weight:600;
-  cursor:pointer;transition:box-shadow .2s,background .2s;
-  display:flex;align-items:center;justify-content:center;gap:10px;
-  margin-bottom:4px;
-}
-.auth-google-btn:hover{box-shadow:0 2px 10px rgba(0,0,0,0.18);background:#f8f8f8;}
-.auth-google-btn:active{background:#f1f3f4;}
-.auth-google-btn svg{flex-shrink:0;}
-.auth-or-divider{
-  display:flex;align-items:center;gap:10px;
-  margin:18px 0 16px;color:var(--text3);font-size:12px;font-weight:500;
-}
-.auth-or-divider::before,.auth-or-divider::after{
-  content:'';flex:1;height:1px;background:var(--border);
-}
-.auth-google-setup{
-  background:rgba(77,159,255,0.07);
-  border:1px solid rgba(77,159,255,0.2);
-  border-radius:8px;padding:10px 14px;
-  font-size:12px;color:var(--text2);line-height:1.6;
-  margin-bottom:14px;
-}
-.auth-google-setup a{color:var(--blue);text-decoration:none;font-weight:600;}
-.auth-google-setup a:hover{text-decoration:underline;}
 
 </style>
 </head>
 <body>
-
-<!-- ═══════════════════════════════════════════════
-     AUTH SCREEN
-═══════════════════════════════════════════════ -->
 <div class="app">
   <!-- Sidebar -->
   <aside class="sidebar" id="sidebar">
@@ -1468,34 +1391,6 @@ svg{display:block;}
             </div>
           </div>
         </div>
-
-        <!-- Multi-Device Sync -->
-        <div class="card" style="grid-column:1/-1;margin-top:20px;">
-          <div class="card-inner">
-            <div class="system-section-title">🔄 Multi-Device Sync (GitHub Gist)</div>
-            <div class="notice" style="margin-bottom:16px;">Sync your trade data across all devices using a private GitHub Gist. Enter your token on each device once — data saves automatically.</div>
-            <div style="display:flex;flex-direction:column;gap:12px;max-width:520px;">
-              <div>
-                <label style="font-size:12px;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;display:block;margin-bottom:6px;">GitHub Token (gist scope)</label>
-                <div style="display:flex;gap:8px;">
-                  <input type="password" id="gist-token-input" placeholder="ghp_xxxxxxxxxxxx"
-                    style="flex:1;background:var(--glass2);border:1px solid var(--border2);border-radius:10px;padding:10px 14px;color:var(--text);font-size:13px;font-family:var(--sans);outline:none;"
-                    value="" />
-                  <button class="btn btn-primary" onclick="saveGistToken()" style="white-space:nowrap;">💾 Save Token</button>
-                </div>
-              </div>
-              <div id="gist-status" style="font-size:12px;color:var(--text3);"></div>
-              <div style="display:flex;gap:8px;flex-wrap:wrap;">
-                <button class="btn btn-ghost btn-sm" onclick="syncNow()">☁️ Sync Now</button>
-                <button class="btn btn-ghost btn-sm" onclick="removeGistToken()" style="color:var(--red);border-color:var(--red);">🗑 Remove Token</button>
-              </div>
-              <div class="notice" style="font-size:11px;margin-top:4px;">
-                <b>How to get a token:</b> GitHub → Settings → Developer settings → Personal access tokens → Tokens (classic) → Generate new token → check <b>gist</b> only → Generate.
-              </div>
-            </div>
-          </div>
-        </div>
-
       </div>
     </div>
 
@@ -1745,7 +1640,7 @@ const STORAGE_KEY = 'kurej_trading_v1';
 // 1. Create a PAT at: GitHub → Settings → Developer Settings →
 //    Personal Access Tokens → Tokens (classic) → check "gist" scope
 // 2. Paste it below. Leave empty to use localStorage only.
-const GIST_TOKEN    = localStorage.getItem('kurej_gist_token') || '';  // set via Sync Settings UI
+const GIST_TOKEN    = localStorage.getItem('kurej_gist_token') || '';  // set via Sync UI
 const GIST_FILENAME = 'kurej_trading.json';
 let   gistId        = localStorage.getItem('kurej_gist_id') || null;
 
@@ -1799,41 +1694,30 @@ async function loadState(){
   }catch(e){}
 }
 
-// ── Gist Sync UI Functions ──────────────────────────────────
+// ── Gist Sync UI ──
 function saveGistToken(){
-  const t = document.getElementById('gist-token-input').value.trim();
-  if(!t){ alert('Please enter a token.'); return; }
-  localStorage.setItem('kurej_gist_token', t);
-  document.getElementById('gist-status').innerHTML = '✅ Token saved. Syncing now…';
-  document.getElementById('gist-token-input').value = '';
-  // Reload page so GIST_TOKEN picks up new value
-  setTimeout(()=>location.reload(), 800);
+  const t = (document.getElementById('gist-token-input')||{}).value||'';
+  if(!t.trim()){ alert('Please enter a token.'); return; }
+  localStorage.setItem('kurej_gist_token', t.trim());
+  setTimeout(()=>location.reload(), 400);
 }
-
 function removeGistToken(){
-  if(!confirm('Remove sync token? Data stays local only.')) return;
+  if(!confirm('Remove sync token?')) return;
   localStorage.removeItem('kurej_gist_token');
   localStorage.removeItem('kurej_gist_id');
-  document.getElementById('gist-status').innerHTML = '🗑 Token removed. Using local storage only.';
+  const s=document.getElementById('gist-status'); if(s) s.innerHTML='🗑 Token removed.';
 }
-
 async function syncNow(){
-  const token = localStorage.getItem('kurej_gist_token');
-  if(!token){ alert('No token saved. Enter your GitHub token above first.'); return; }
-  document.getElementById('gist-status').innerHTML = '⏳ Syncing…';
+  const token=localStorage.getItem('kurej_gist_token');
+  if(!token){ alert('No token saved. Enter your GitHub token first.'); return; }
+  const s=document.getElementById('gist-status'); if(s) s.innerHTML='⏳ Syncing…';
   await saveState();
-  document.getElementById('gist-status').innerHTML = '✅ Synced at ' + new Date().toLocaleTimeString();
+  if(s) s.innerHTML='✅ Synced at '+new Date().toLocaleTimeString();
 }
-
 function initGistUI(){
-  const token = localStorage.getItem('kurej_gist_token');
-  const statusEl = document.getElementById('gist-status');
-  if(!statusEl) return;
-  if(token){
-    statusEl.innerHTML = '✅ Token active — data syncs automatically on each save.';
-  } else {
-    statusEl.innerHTML = '⚠️ No token set — data is local only.';
-  }
+  const s=document.getElementById('gist-status'); if(!s) return;
+  const token=localStorage.getItem('kurej_gist_token');
+  s.innerHTML = token ? '✅ Token active — syncs automatically.' : '⚠️ No token — data is local only.';
 }
 
 // No demo data — real manual entry only
@@ -4558,25 +4442,11 @@ window.addEventListener('load', ()=>{ setTimeout(initGoogleSignIn, 500); });
 
 
 // SHA-256 hash via Web Crypto API; btoa fallback
-async function hashPassword(password){
-  if(window.crypto && window.crypto.subtle){
-    const enc = new TextEncoder();
-    const buf = await window.crypto.subtle.digest('SHA-256', enc.encode(password));
-    return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
-  }
-  return btoa(unescape(encodeURIComponent(password)));
-}
 
 function isValidEmail(v){
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 }
 
-function getAuthUsers(){
-  try{ return JSON.parse(localStorage.getItem(AUTH_USERS_KEY)||'{}'); }catch(e){ return {}; }
-}
-function saveAuthUsers(users){
-  localStorage.setItem(AUTH_USERS_KEY, JSON.stringify(users));
-}
 
 function getSession(){
   try{
@@ -4599,65 +4469,13 @@ function clearSession(){
   localStorage.removeItem(AUTH_SESSION_KEY+'_persistent');
 }
 
-function authShowMsg(type, msg){
-  const err = document.getElementById('auth-error');
-  const suc = document.getElementById('auth-success');
-  err.style.display='none'; suc.style.display='none';
-  if(type==='error'){ err.textContent=msg; err.style.display='block'; }
-  if(type==='success'){ suc.textContent=msg; suc.style.display='block'; }
-}
 
-function authTogglePwd(inputId, btn){
-  const inp = document.getElementById(inputId);
-  if(inp.type==='password'){ inp.type='text'; btn.textContent='🙈'; }
-  else { inp.type='password'; btn.textContent='👁'; }
-}
 
 // Forgot password state
 let _fpEmail = '';
 
-function authShowTab(tab){
-  // Tab bar visibility
-  const tabBar = document.getElementById('auth-tab-bar');
-  if(tabBar) tabBar.style.display = tab==='forgot' ? 'none' : '';
 
-  document.getElementById('tab-login').classList.toggle('active', tab==='login');
-  document.getElementById('tab-signup').classList.toggle('active', tab==='signup');
-  document.getElementById('auth-login-form').style.display  = tab==='login'  ? '' : 'none';
-  document.getElementById('auth-signup-form').style.display = tab==='signup' ? '' : 'none';
-  document.getElementById('auth-forgot-form').style.display = tab==='forgot' ? '' : 'none';
 
-  // Reset forgot steps
-  if(tab==='forgot'){
-    _fpEmail='';
-    document.getElementById('fp-step1').style.display='';
-    document.getElementById('fp-step2').style.display='none';
-    document.getElementById('fp-step3').style.display='none';
-    const fp = document.getElementById('fp-email');
-    if(fp) fp.value='';
-  }
-  authShowMsg('','');
-}
-
-function renderSavedUsers(){
-  const users = getAuthUsers();
-  const emails = Object.keys(users);
-  const wrap  = document.getElementById('auth-saved-users');
-  const list  = document.getElementById('auth-saved-list');
-  if(!emails.length){ if(wrap) wrap.style.display='none'; return; }
-  if(wrap) wrap.style.display='block';
-  list.innerHTML = emails.map(e=>`
-    <div class="auth-user-chip" onclick="authQuickSelect('${e.replace(/'/g,"\\'")}')">
-      <span class="auth-user-chip-dot"></span>
-      <span style="flex:1;font-weight:600;color:var(--text);font-size:13px;">${e}</span>
-      <span style="font-size:11px;color:var(--text3);">tap to fill →</span>
-    </div>`).join('');
-}
-
-function authQuickSelect(email){
-  document.getElementById('li-user').value = email;
-  document.getElementById('li-pass').focus();
-}
 
 // ── SIGN UP ──
 async function doSignup(){
@@ -4671,122 +4489,15 @@ async function doSignup(){
   const users = getAuthUsers();
   if(users[email]){ authShowMsg('error','An account with that email already exists. Please log in.'); return; }
 
-  const sq = (document.getElementById('su-sq-select') ? document.getElementById('su-sq-select').value : '') || document.getElementById('su-sq').value || '';
-  const sa = (document.getElementById('su-sa-input') ? document.getElementById('su-sa-input').value : '') || document.getElementById('su-sa').value || '';
-  if(!sq){ authShowMsg('error','Please choose a security question.'); return; }
-  if(!sa.trim()){ authShowMsg('error','Please enter your security answer.'); return; }
-
   const hashed = await hashPassword(pass);
-  const hashedAnswer = await hashPassword(sa.trim().toLowerCase());
-  users[email] = { hash: hashed, createdAt: Date.now(), securityQuestion: sq, securityAnswer: hashedAnswer };
+  users[email] = { hash: hashed, createdAt: Date.now() };
   saveAuthUsers(users);
   setSession(email, true);
   authShowMsg('success','Account created! Signing you in…');
   setTimeout(()=>authGrantAccess(email), 700);
 }
 
-// ── LOG IN ──
-async function doLogin(){
-  const email    = (document.getElementById('li-user').value||'').trim().toLowerCase();
-  const pass     =  document.getElementById('li-pass').value||'';
-  const remember =  document.getElementById('li-remember').checked;
-
-  if(!email){ authShowMsg('error','Please enter your email address.'); return; }
-  if(!isValidEmail(email)){ authShowMsg('error','Please enter a valid email address.'); return; }
-  if(!pass){ authShowMsg('error','Please enter your password.'); return; }
-
-  const users = getAuthUsers();
-  if(!users[email]){
-    authShowMsg('error','No account found with that email. Please sign up first.');
-    return;
-  }
-
-  // Google-linked accounts must use the Google button
-  if(users[email].googleLinked || users[email].hash === '__google__'){
-    authShowMsg('error','This account was created with Google. Please use the "Continue with Google" button above.');
-    return;
-  }
-
-  const hashed = await hashPassword(pass);
-  if(hashed !== users[email].hash){
-    authShowMsg('error','Incorrect password. Please try again.');
-    return;
-  }
-
-  setSession(email, remember);
-  authShowMsg('success','Welcome back! Loading your dashboard…');
-  setTimeout(()=>authGrantAccess(email), 600);
-}
-
-// ── FORGOT PASSWORD — Step 1: verify email ──
-function fpStep1(){
-  const email = (document.getElementById('fp-email').value||'').trim().toLowerCase();
-  if(!email){ authShowMsg('error','Please enter your email address.'); return; }
-  if(!isValidEmail(email)){ authShowMsg('error','Please enter a valid email address.'); return; }
-
-  const users = getAuthUsers();
-  if(!users[email]){
-    authShowMsg('error','No account found with that email address.');
-    return;
-  }
-  if(!users[email].securityQuestion){
-    authShowMsg('error','This account has no security question set. Please log in and set one under Account Settings, or create a new account.');
-    return;
-  }
-
-  _fpEmail = email;
-  authShowMsg('','');
-  document.getElementById('fp-step1').style.display='none';
-  document.getElementById('fp-question').textContent = users[email].securityQuestion;
-  document.getElementById('fp-step2').style.display='';
-  document.getElementById('fp-answer').value='';
-  document.getElementById('fp-answer').focus();
-}
-
-// ── FORGOT PASSWORD — Step 2: verify answer ──
-async function fpStep2(){
-  const answer = (document.getElementById('fp-answer').value||'').trim().toLowerCase();
-  if(!answer){ authShowMsg('error','Please enter your answer.'); return; }
-
-  const users = getAuthUsers();
-  if(!users[_fpEmail]){ authShowMsg('error','Something went wrong. Please start again.'); return; }
-
-  const hashedAnswer = await hashPassword(answer);
-  if(hashedAnswer !== users[_fpEmail].securityAnswer){
-    authShowMsg('error','Incorrect answer. Please try again.');
-    return;
-  }
-
-  authShowMsg('','');
-  document.getElementById('fp-step2').style.display='none';
-  document.getElementById('fp-step3').style.display='';
-  document.getElementById('fp-newpass').value='';
-  document.getElementById('fp-newpass2').value='';
-  document.getElementById('fp-newpass').focus();
-}
-
-// ── FORGOT PASSWORD — Step 3: set new password ──
-async function fpStep3(){
-  const pass  = document.getElementById('fp-newpass').value||'';
-  const pass2 = document.getElementById('fp-newpass2').value||'';
-  if(pass.length < 6){ authShowMsg('error','Password must be at least 6 characters.'); return; }
-  if(pass !== pass2){ authShowMsg('error','Passwords do not match.'); return; }
-
-  const users = getAuthUsers();
-  if(!users[_fpEmail]){ authShowMsg('error','Something went wrong. Please start again.'); return; }
-
-  const hashed = await hashPassword(pass);
-  users[_fpEmail].hash = hashed;
-  saveAuthUsers(users);
-  authShowMsg('success','Password reset! You can now log in with your new password.');
-  setTimeout(()=>{
-    authShowTab('login');
-    document.getElementById('li-user').value = _fpEmail;
-    _fpEmail='';
-  }, 1400);
-}
-
-// ── Auth removed — direct access ──
+// ── Auth removed — open access ──
 function authGrantAccess(email){
   initGistUI();
 }
@@ -4832,7 +4543,6 @@ function seedPreviewBackground(){
   state.trades = trades;
 }
 
-// Auth removed — no login check needed
 
 function updateAccountDisplay(){
   const accts = state.accounts||[];
@@ -6082,7 +5792,15 @@ document.addEventListener('click', function(){ closeAcctDropdown(); });
 
 loadState().then(()=>{
 
-// Auth removed — load directly
+// ── After state loads: check if user is not logged in, seed preview & show auth ──
+const _authSession = getSession();
+const _authUsers = getAuthUsers();
+const _hasValidSession = _authSession && _authUsers[_authSession.email];
+
+if(!_hasValidSession){
+  // Seed preview data so the dashboard background looks alive
+  seedPreviewBackground();
+}
 
 updateAccountDisplay();
 renderDashboard();
