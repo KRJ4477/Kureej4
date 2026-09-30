@@ -1480,7 +1480,6 @@ let state = {
   ],
   models: ['ICT', 'SMC', 'Breaker', 'FVG', 'OB', 'BMS'],
   riskChecklist: ['Used correct lot size','SL at structure','Minimum 1:2 R:R','News check','Not revenge trading'],
-  tradeChecklist: ['Confirmed bias','Entry on lower TF','Checked spread','Screenshot taken','Journaled post-trade'],
   htfChecklist: ['HTF trend confirmed','Key level identified','Session active','Market structure shift'],
   studyEntries: [],
   studyFilter: 'All',
@@ -2763,7 +2762,6 @@ function renderJournal(){
             // Checklist breakdown
             const sections = [
               {label:'📋 Risk Mgmt', items:state.riskChecklist, data:t.riskChecklist||{}},
-              {label:'✅ Trade', items:state.tradeChecklist, data:t.tradeChecklist||{}},
               {label:'🔭 HTF', items:state.htfChecklist, data:t.htfChecklist||{}},
             ];
             const totalAll = sections.reduce((s,x)=>s+x.items.length,0);
@@ -2839,11 +2837,6 @@ function openLogTrade(id){
     <div class="check-item">
       <input type="checkbox" id="rc${i}" ${t&&t.riskChecklist&&t.riskChecklist[i]?'checked':''} onchange="autoGradeFromForm()">
       <label for="rc${i}">${c}</label>
-    </div>`).join('');
-  const tradeItems = state.tradeChecklist.map((c,i)=>`
-    <div class="check-item">
-      <input type="checkbox" id="tc${i}" ${t&&t.tradeChecklist&&t.tradeChecklist[i]?'checked':''} onchange="autoGradeFromForm()">
-      <label for="tc${i}">${c}</label>
     </div>`).join('');
   const htfItems = state.htfChecklist.map((c,i)=>`
     <div class="check-item">
@@ -2934,12 +2927,6 @@ function openLogTrade(id){
       </div>
       <div class="form-group full">
         <details open>
-          <summary style="cursor:pointer;font-size:13px;color:var(--text2);font-weight:600;">✅ Trade Checklist</summary>
-          <div class="checklist" style="margin-top:10px;">${tradeItems}</div>
-        </details>
-      </div>
-      <div class="form-group full">
-        <details open>
           <summary style="cursor:pointer;font-size:13px;color:var(--text2);font-weight:600;">🔭 HTF Checklist</summary>
           <div class="checklist" style="margin-top:10px;">${htfItems}</div>
         </details>
@@ -3023,12 +3010,11 @@ function renderPmPlanPreview(){
 }
 
 // ─── Auto-grade from checklists ───────────────────────────
-function calcAutoGrade(riskObj, tradeObj, htfObj, riskLen, tradeLen, htfLen){
-  const total = riskLen + tradeLen + htfLen;
+function calcAutoGrade(riskObj, htfObj, riskLen, htfLen){
+  const total = riskLen + htfLen;
   if(total === 0) return '';
   const ticked =
     Object.values(riskObj).filter(Boolean).length +
-    Object.values(tradeObj).filter(Boolean).length +
     Object.values(htfObj).filter(Boolean).length;
   const pct = ticked / total;
   if(pct >= 0.95) return 'A+';
@@ -3044,21 +3030,18 @@ function autoGradeFromForm(){
   if(manualFlag && manualFlag.value === '1') return;
 
   const riskLen = state.riskChecklist.length;
-  const tradeLen = state.tradeChecklist.length;
   const htfLen = state.htfChecklist.length;
-  const total = riskLen + tradeLen + htfLen;
+  const total = riskLen + htfLen;
   if(total === 0) return;
 
-  const riskObj={}, tradeObj={}, htfObj={};
+  const riskObj={}, htfObj={};
   state.riskChecklist.forEach((_,i)=>{ const el=document.getElementById('rc'+i); if(el) riskObj[i]=el.checked; });
-  state.tradeChecklist.forEach((_,i)=>{ const el=document.getElementById('tc'+i); if(el) tradeObj[i]=el.checked; });
   state.htfChecklist.forEach((_,i)=>{ const el=document.getElementById('hc'+i); if(el) htfObj[i]=el.checked; });
 
   const ticked =
     Object.values(riskObj).filter(Boolean).length +
-    Object.values(tradeObj).filter(Boolean).length +
     Object.values(htfObj).filter(Boolean).length;
-  const grade = calcAutoGrade(riskObj, tradeObj, htfObj, riskLen, tradeLen, htfLen);
+  const grade = calcAutoGrade(riskObj, htfObj, riskLen, htfLen);
 
   // Update score label
   const scoreEl = document.getElementById('f-grade-score');
@@ -3126,8 +3109,6 @@ function handleScreenshot(input){
 function saveTrade(id){
   const riskChecklist={};
   state.riskChecklist.forEach((_,i)=>{const el=document.getElementById('rc'+i);if(el)riskChecklist[i]=el.checked;});
-  const tradeChecklist={};
-  state.tradeChecklist.forEach((_,i)=>{const el=document.getElementById('tc'+i);if(el)tradeChecklist[i]=el.checked;});
   const htfChecklist={};
   state.htfChecklist.forEach((_,i)=>{const el=document.getElementById('hc'+i);if(el)htfChecklist[i]=el.checked;});
 
@@ -3136,17 +3117,16 @@ function saveTrade(id){
   let rating = document.getElementById('f-rating').value || '';
   if(!manualFlag || manualFlag.value !== '1'){
     const autoGrade = calcAutoGrade(
-      riskChecklist, tradeChecklist, htfChecklist,
-      state.riskChecklist.length, state.tradeChecklist.length, state.htfChecklist.length
+      riskChecklist, htfChecklist,
+      state.riskChecklist.length, state.htfChecklist.length
     );
     if(autoGrade) rating = autoGrade;
   }
 
   // Checklist score for display
-  const totalChecks = state.riskChecklist.length + state.tradeChecklist.length + state.htfChecklist.length;
+  const totalChecks = state.riskChecklist.length + state.htfChecklist.length;
   const tickedChecks =
     Object.values(riskChecklist).filter(Boolean).length +
-    Object.values(tradeChecklist).filter(Boolean).length +
     Object.values(htfChecklist).filter(Boolean).length;
 
   const acctEl = document.getElementById('f-account');
@@ -3181,7 +3161,7 @@ function saveTrade(id){
     management: document.getElementById('f-management').value,
     notes: document.getElementById('f-notes').value,
     screenshot: document.getElementById('f-screenshot').value,
-    riskChecklist,tradeChecklist,htfChecklist,
+    riskChecklist,htfChecklist,
   };
   if(id){state.trades=state.trades.map(x=>x.id===id?t:x);}
   else{state.trades.push(t);}
@@ -3435,80 +3415,8 @@ function renderSystem(){
   renderTagList('models-list',state.models,'model');
   renderTagList('risk-list',state.riskChecklist,'risk');
   renderTagList('htf-list',state.htfChecklist,'htf');
-  renderChecklistEditor();
 }
 
-function renderChecklistEditor(){
-  const body = document.getElementById('checklist-editor-body');
-  if(!body) return;
-  const groups = state.dailyChecklistItems || [];
-  body.innerHTML = groups.map((g, gi) => `
-    <div style="background:var(--glass);border:1px solid var(--border);border-radius:12px;padding:14px;">
-      <!-- Group header: editable label + delete group -->
-      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
-        <input type="text" value="${g.label.replace(/"/g,'&quot;')}"
-          style="flex:1;background:var(--glass2);border:1px solid var(--border2);border-radius:8px;padding:7px 10px;color:var(--text);font-family:var(--sans);font-size:13px;font-weight:700;outline:none;"
-          onchange="renameChecklistGroup(${gi}, this.value)"
-          placeholder="Group label…">
-        <button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:rgba(255,77,109,0.3);flex-shrink:0;" onclick="removeChecklistGroup(${gi})">✕ Remove Group</button>
-      </div>
-      <!-- Existing items -->
-      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:10px;" id="cl-items-${gi}">
-        ${g.items.map((item, ii) => `
-          <div style="display:flex;align-items:center;gap:8px;">
-            <input type="text" value="${item.replace(/"/g,'&quot;')}"
-              style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-family:var(--sans);font-size:13px;outline:none;"
-              onchange="editChecklistItem(${gi}, ${ii}, this.value)"
-              placeholder="Checklist item…">
-            <button class="btn btn-ghost btn-sm" style="color:var(--red);border-color:rgba(255,77,109,0.2);flex-shrink:0;padding:4px 8px;" onclick="removeChecklistItem(${gi}, ${ii})">✕</button>
-          </div>`).join('')}
-      </div>
-      <!-- Add item to this group -->
-      <div class="add-tag-row" style="margin-top:4px;">
-        <input type="text" id="new-cl-item-${gi}" placeholder="Add item to this group…" style="flex:1;font-size:13px;"
-          onkeydown="if(event.key==='Enter')addChecklistItem(${gi})">
-        <button class="btn btn-primary btn-sm" onclick="addChecklistItem(${gi})">+ Add</button>
-      </div>
-    </div>`).join('');
-}
-
-function renameChecklistGroup(gi, val){
-  if(!state.dailyChecklistItems[gi]) return;
-  state.dailyChecklistItems[gi].label = val;
-  saveState(); renderChecklist();
-}
-function removeChecklistGroup(gi){
-  if(!confirm('Remove this entire group and all its items?')) return;
-  state.dailyChecklistItems.splice(gi, 1);
-  saveState(); renderChecklistEditor(); renderChecklist();
-}
-function editChecklistItem(gi, ii, val){
-  if(!state.dailyChecklistItems[gi]) return;
-  state.dailyChecklistItems[gi].items[ii] = val;
-  saveState(); renderChecklist();
-}
-function removeChecklistItem(gi, ii){
-  if(!state.dailyChecklistItems[gi]) return;
-  state.dailyChecklistItems[gi].items.splice(ii, 1);
-  saveState(); renderChecklistEditor(); renderChecklist();
-}
-function addChecklistItem(gi){
-  const inp = document.getElementById(`new-cl-item-${gi}`);
-  const v = (inp||{}).value?.trim();
-  if(!v) return;
-  state.dailyChecklistItems[gi].items.push(v);
-  inp.value = '';
-  saveState(); renderChecklistEditor(); renderChecklist();
-}
-function addChecklistGroup(){
-  const inp = document.getElementById('new-cl-group');
-  const v = (inp||{}).value?.trim();
-  if(!v) return;
-  if(!state.dailyChecklistItems) state.dailyChecklistItems = [];
-  state.dailyChecklistItems.push({label: v, items: []});
-  inp.value = '';
-  saveState(); renderChecklistEditor(); renderChecklist();
-}
 function renderTagList(containerId, arr, type){
   const el = document.getElementById(containerId);
   if(!el) return;
@@ -3519,7 +3427,6 @@ function removeTag(type,idx){
   if(type==='pair') state.pairs.splice(idx,1);
   else if(type==='model') state.models.splice(idx,1);
   else if(type==='risk') state.riskChecklist.splice(idx,1);
-  else if(type==='tradecheck') state.tradeChecklist.splice(idx,1);
   else if(type==='htf') state.htfChecklist.splice(idx,1);
   saveState();renderSystem();refreshPairDropdowns();
 }
@@ -3546,7 +3453,6 @@ function refreshPairDropdowns(){
 }
 function addModel(){const v=document.getElementById('new-model').value.trim();if(v){state.models.push(v);document.getElementById('new-model').value='';saveState();renderSystem();}}
 function addRisk(){const v=document.getElementById('new-risk').value.trim();if(v){state.riskChecklist.push(v);document.getElementById('new-risk').value='';saveState();renderSystem();}}
-function addTradeCheck(){const v=document.getElementById('new-trade-check').value.trim();if(v){state.tradeChecklist.push(v);document.getElementById('new-trade-check').value='';saveState();renderSystem();}}
 function addHtf(){const v=document.getElementById('new-htf').value.trim();if(v){state.htfChecklist.push(v);document.getElementById('new-htf').value='';saveState();renderSystem();}}
 
 // ── Daily Checklist ───────────────────────────────────────────
@@ -5338,7 +5244,7 @@ function mt5ConfirmImport(){
       management: '',
       screenshot: '',
       commission: String(r._comm||0),
-      riskChecklist:{}, tradeChecklist:{}, htfChecklist:{},
+      riskChecklist:{}, htfChecklist:{},
     };
     if(!state.trades) state.trades = [];
     state.trades.push(trade);
