@@ -1180,18 +1180,6 @@ svg{display:block;}
           </div>
         </div>
 
-        <!-- Trade Checklist -->
-        <div class="card">
-          <div class="card-inner">
-            <div class="system-section-title">Trade Checklist</div>
-            <div class="tag-list" id="trade-check-list"></div>
-            <div class="add-tag-row">
-              <input type="text" id="new-trade-check" placeholder="Add criterion…" style="flex:1;" onkeydown="if(event.key==='Enter')addTradeCheck()">
-              <button class="btn btn-primary btn-sm" onclick="addTradeCheck()">Add</button>
-            </div>
-          </div>
-        </div>
-
         <!-- HTF Checklist -->
         <div class="card">
           <div class="card-inner">
@@ -1200,22 +1188,6 @@ svg{display:block;}
             <div class="add-tag-row">
               <input type="text" id="new-htf" placeholder="Add criterion…" style="flex:1;" onkeydown="if(event.key==='Enter')addHtf()">
               <button class="btn btn-primary btn-sm" onclick="addHtf()">Add</button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Daily Checklist Editor -->
-        <div class="card" style="grid-column:1/-1;">
-          <div class="card-inner">
-            <div class="system-section-title">✅ Daily Checklist Editor</div>
-            <div style="font-size:12px;color:var(--text3);margin-bottom:16px;">Edit the groups and items that appear in your Pre-Market daily checklist. Changes apply immediately.</div>
-            <div id="checklist-editor-body" style="display:flex;flex-direction:column;gap:16px;"></div>
-            <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border);">
-              <div style="font-size:12px;color:var(--text3);margin-bottom:8px;font-weight:600;">Add a new group</div>
-              <div class="add-tag-row">
-                <input type="text" id="new-cl-group" placeholder="e.g. 🎯 Focus Rules" style="flex:1;" onkeydown="if(event.key==='Enter')addChecklistGroup()">
-                <button class="btn btn-primary btn-sm" onclick="addChecklistGroup()">Add Group</button>
-              </div>
             </div>
           </div>
         </div>
@@ -3462,7 +3434,6 @@ function renderSystem(){
   renderTagList('pairs-list',state.pairs,'pair');
   renderTagList('models-list',state.models,'model');
   renderTagList('risk-list',state.riskChecklist,'risk');
-  renderTagList('trade-check-list',state.tradeChecklist,'tradecheck');
   renderTagList('htf-list',state.htfChecklist,'htf');
   renderChecklistEditor();
 }
@@ -3539,7 +3510,9 @@ function addChecklistGroup(){
   saveState(); renderChecklistEditor(); renderChecklist();
 }
 function renderTagList(containerId, arr, type){
-  document.getElementById(containerId).innerHTML=arr.map((item,i)=>`
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  el.innerHTML=arr.map((item,i)=>`
     <div class="tag-item">${item}<button class="tag-remove" onclick="removeTag('${type}',${i})">×</button></div>`).join('');
 }
 function removeTag(type,idx){
