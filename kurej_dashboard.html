@@ -944,43 +944,6 @@ svg{display:block;}
         </div>
       </div>
 
-      <!-- Daily Checklist & Score -->
-      <div class="card anim-7" style="margin-bottom:24px;">
-        <div class="card-inner">
-          <div class="section-header" style="margin-bottom:14px;">
-            <span class="section-title">📝 Daily Checklist</span>
-            <div style="display:flex;align-items:center;gap:10px;">
-              <div id="checklist-score-badge" style="display:flex;align-items:center;gap:6px;">
-                <svg width="48" height="48" viewBox="0 0 48 48" id="checklist-score-ring">
-                  <circle cx="24" cy="24" r="20" fill="none" stroke="rgba(255,255,255,0.07)" stroke-width="5"/>
-                  <circle cx="24" cy="24" r="20" fill="none" stroke="var(--blue)" stroke-width="5"
-                    stroke-dasharray="125.6" stroke-dashoffset="125.6"
-                    stroke-linecap="round" transform="rotate(-90 24 24)"
-                    id="checklist-ring-fill" style="transition:stroke-dashoffset .4s,stroke .4s;"/>
-                  <text x="24" y="28" text-anchor="middle" font-family="JetBrains Mono" font-weight="700" font-size="12" fill="var(--text)" id="checklist-ring-label">0%</text>
-                </svg>
-                <div>
-                  <div id="checklist-score-label" style="font-size:13px;font-weight:700;color:var(--text);">0 / 0</div>
-                  <div id="checklist-score-tag" style="font-size:10px;color:var(--text3);">Not started</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Date selector -->
-          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
-            <button class="btn btn-ghost btn-sm" onclick="checklistDateShift(-1)">‹</button>
-            <input type="date" id="checklist-date" style="background:var(--glass);border:1px solid var(--border2);border-radius:8px;padding:5px 10px;color:var(--text);font-family:var(--sans);font-size:13px;" onchange="renderChecklist()">
-            <button class="btn btn-ghost btn-sm" onclick="checklistDateShift(1)">›</button>
-            <button class="btn btn-ghost btn-sm" onclick="setChecklistToday()" style="margin-left:4px;">Today</button>
-          </div>
-
-          <!-- Checklist groups -->
-          <div id="daily-checklist-body" style="display:flex;flex-direction:column;gap:16px;"></div>
-
-        </div>
-      </div>
-
       </div><!-- /#dash-content -->
     </div>
 
@@ -2083,9 +2046,6 @@ function renderDashboard(){
   renderHourlyHeatmap(trades);
   renderStreakAndDrawdown(trades);
   loadMarketNews();
-  const cdEl = document.getElementById('checklist-date');
-  if(cdEl && !cdEl.value) cdEl.value = new Date().toISOString().split('T')[0];
-  renderChecklist();
 }
 
 function renderKPIs(st){
@@ -3455,77 +3415,6 @@ function addModel(){const v=document.getElementById('new-model').value.trim();if
 function addRisk(){const v=document.getElementById('new-risk').value.trim();if(v){state.riskChecklist.push(v);document.getElementById('new-risk').value='';saveState();renderSystem();}}
 function addHtf(){const v=document.getElementById('new-htf').value.trim();if(v){state.htfChecklist.push(v);document.getElementById('new-htf').value='';saveState();renderSystem();}}
 
-// ── Daily Checklist ───────────────────────────────────────────
-function getChecklistDate(){
-  const el = document.getElementById('checklist-date');
-  return el ? el.value : new Date().toISOString().split('T')[0];
-}
-function setChecklistToday(){
-  const el = document.getElementById('checklist-date');
-  if(el) el.value = new Date().toISOString().split('T')[0];
-  renderChecklist();
-}
-function checklistDateShift(delta){
-  const el = document.getElementById('checklist-date');
-  if(!el) return;
-  const d = new Date(el.value || new Date().toISOString().split('T')[0]);
-  d.setDate(d.getDate() + delta);
-  el.value = d.toISOString().split('T')[0];
-  renderChecklist();
-}
-function toggleChecklistItem(date, key, checked){
-  if(!state.dailyChecklists) state.dailyChecklists={};
-  if(!state.dailyChecklists[date]) state.dailyChecklists[date]={checks:{},notes:''};
-  state.dailyChecklists[date].checks[key] = checked;
-  saveState();
-  updateChecklistScore(date);
-}
-function updateChecklistScore(date){
-  const groups = state.dailyChecklistItems || [];
-  const dayData = (state.dailyChecklists||{})[date]||{checks:{}};
-  let total=0, done=0;
-  groups.forEach((g,gi)=>g.items.forEach((_,ii)=>{
-    total++;
-    if(dayData.checks[`${gi}_${ii}`]) done++;
-  }));
-  const pct = total ? Math.round(done/total*100) : 0;
-  const circ = 2*Math.PI*20; // r=20 → ~125.66
-  const offset = circ - (pct/100)*circ;
-  const col = pct===100?'var(--green)':pct>=60?'var(--blue)':pct>=30?'var(--gold)':'var(--red)';
-  const tag = pct===100?'✅ Perfect day!':pct>=75?'Almost there!':pct>=50?'Halfway there':pct>0?'Keep going':'Not started';
-  const ring = document.getElementById('checklist-ring-fill');
-  const lbl = document.getElementById('checklist-ring-label');
-  const slbl = document.getElementById('checklist-score-label');
-  const stag = document.getElementById('checklist-score-tag');
-  if(ring){ring.style.strokeDashoffset=offset;ring.style.stroke=col;}
-  if(lbl){lbl.textContent=pct+'%';lbl.setAttribute('fill',col);}
-  if(slbl) slbl.textContent=`${done} / ${total}`;
-  if(stag){stag.textContent=tag;stag.style.color=col;}
-}
-function renderChecklist(){
-  const date = getChecklistDate();
-  const groups = state.dailyChecklistItems || [];
-  const dayData = (state.dailyChecklists||{})[date]||{checks:{},notes:''};
-  const body = document.getElementById('daily-checklist-body');
-  if(!body) return;
-  body.innerHTML = groups.map((g,gi)=>`
-    <div>
-      <div style="font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px;">${g.label}</div>
-      <div style="display:flex;flex-direction:column;gap:6px;">
-        ${g.items.map((item,ii)=>{
-          const key=`${gi}_${ii}`;
-          const checked=!!dayData.checks[key];
-          return `<label style="display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:9px;background:${checked?'rgba(0,212,138,0.07)':'var(--glass)'};border:1px solid ${checked?'rgba(0,212,138,0.2)':'var(--border)'};cursor:pointer;transition:background .2s;">
-            <input type="checkbox" ${checked?'checked':''} onchange="toggleChecklistItem('${date}','${key}',this.checked)"
-              style="width:16px;height:16px;accent-color:var(--green);cursor:pointer;flex-shrink:0;">
-            <span style="font-size:13px;color:${checked?'var(--text)':'var(--text2)'};text-decoration:${checked?'line-through':'none'};transition:color .2s;">${item}</span>
-            ${checked?'<span style="margin-left:auto;font-size:13px;">✅</span>':''}
-          </label>`;
-        }).join('')}
-      </div>
-    </div>`).join('');
-  updateChecklistScore(date);
-}
 // legacy stub so any saved reference doesn't break
 // ── Market News ──────────────────────────────────────────────
 async function loadMarketNews(){
