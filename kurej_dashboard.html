@@ -4716,7 +4716,7 @@ function saveStudyEntry(id){
   if(!title){ alert('Please enter a title.'); return; }
 
   const entry = {
-    id: id || ('st'+Date.now()),
+    id: id || ('st'+Date.now()+'_'+Math.random().toString(36).slice(2,8)),
     date, sessionType, title, description, screenshot,
   };
 
