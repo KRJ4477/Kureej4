@@ -887,6 +887,14 @@ svg{display:block;}
         </div>
       </div>
 
+      <!-- Model Performance -->
+      <div class="card anim-5" style="margin-bottom:24px;">
+        <div class="card-inner">
+          <div class="section-header"><span class="section-title">Model Performance</span></div>
+          <div class="setup-grid" id="model-grid"></div>
+        </div>
+      </div>
+
       <!-- Monthly Calendar Heatmap — LARGE full-width -->
       <div class="card anim-5" style="margin-bottom:24px;">
         <div class="card-inner">
@@ -2054,6 +2062,7 @@ function renderDashboard(){
   renderDonut(st);
   renderPairBars(trades);
   renderSetupGrid(trades);
+  renderModelGrid(trades);
   renderSessionGrid(trades);
   renderEmotionalAvg(trades);
   renderCalendar(trades);
@@ -2184,6 +2193,24 @@ function renderSetupGrid(trades){
     <div class="setup-card">
       <div class="setup-name">${s}</div>
       <div class="setup-trades text3">${v.count} trade${v.count!==1?'s':''}</div>
+      <div class="setup-pnl ${v.pnl>=0?'green':'red'}">${v.pnl>=0?'+':''}$${Math.abs(v.pnl).toFixed(0)}</div>
+    </div>`).join('')
+  : '<div style="color:var(--text3);font-size:13px;">No data</div>';
+}
+
+function renderModelGrid(trades){
+  const map = {};
+  trades.forEach(t=>{
+    const m=t.model||'Unknown';
+    if(!map[m]) map[m]={pnl:0,count:0,wins:0};
+    map[m].pnl += +t.pnl; map[m].count++;
+    if(t.result==='Win') map[m].wins++;
+  });
+  const sorted = Object.entries(map).sort((a,b)=>b[1].pnl-a[1].pnl);
+  document.getElementById('model-grid').innerHTML = sorted.length ? sorted.map(([m,v])=>`
+    <div class="setup-card">
+      <div class="setup-name">${m}</div>
+      <div class="setup-trades text3">${v.count} trade${v.count!==1?'s':''} · ${v.count?((v.wins/v.count)*100).toFixed(0):0}% WR</div>
       <div class="setup-pnl ${v.pnl>=0?'green':'red'}">${v.pnl>=0?'+':''}$${Math.abs(v.pnl).toFixed(0)}</div>
     </div>`).join('')
   : '<div style="color:var(--text3);font-size:13px;">No data</div>';
