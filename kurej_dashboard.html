@@ -1230,7 +1230,7 @@ svg{display:block;}
         <div class="card" style="grid-column:1/-1;">
           <div class="card-inner">
             <div class="system-section-title">Data Management</div>
-            <div class="notice" style="margin-bottom:16px;">🔒 All data is stored locally in your browser (localStorage). Export regularly to keep a backup.</div>
+            <div class="notice" style="margin-bottom:16px;">🔒 <span id="storage-status">All data is stored locally in your browser (localStorage). Export regularly to keep a backup.</span></div>
             <div class="backup-section">
               <button class="btn btn-ghost" onclick="openMt5Import()" style="border-color:rgba(255,209,102,0.35);color:var(--gold);">📥 Import MT5 CSV/HTML</button>
               <button class="btn btn-primary" onclick="exportData()">⬇ Export JSON Backup</button>
@@ -1523,9 +1523,37 @@ const GIST_TOKEN    = localStorage.getItem('kurej_gist_token') || '';  // set vi
 const GIST_FILENAME = 'kurej_trading.json';
 let   gistId        = localStorage.getItem('kurej_gist_id') || null;
 
+// ── Local file storage (server.py / server.js on localhost) ──
+let fileServerOn = false;
+let _fileSaveTimer = null;
+function setStorageStatus(msg){
+  const el = document.getElementById('storage-status');
+  if(el) el.textContent = msg;
+}
+function pushToFileServer(){
+  clearTimeout(_fileSaveTimer);
+  _fileSaveTimer = setTimeout(async ()=>{
+    try{
+      const savedAt = Date.now();
+      const res = await fetch('/api/data', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({savedAt, data: state})
+      });
+      if(!res.ok) throw new Error('HTTP '+res.status);
+      localStorage.setItem('kurej_saved_at', String(savedAt));
+      setStorageStatus('💾 Saved to data/kurej_trading.json at ' + new Date(savedAt).toLocaleTimeString());
+    }catch(e){
+      console.error('File save failed:', e);
+      setStorageStatus('⚠️ Could not save to file — is the server still running? (browser copy is safe)');
+    }
+  }, 400);
+}
+
 async function saveState(){
   // Always keep a local backup
   try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+  if(fileServerOn) pushToFileServer();
 
   if(!GIST_TOKEN) return;
   try{
@@ -1554,7 +1582,31 @@ async function saveState(){
 }
 
 async function loadState(){
-  // Try Gist first
+  // Try local file server first (only exists when run via server.py / server.js)
+  try{
+    const res = await fetch('/api/data', {cache:'no-store'});
+    const ct = res.headers.get('content-type') || '';
+    if((res.ok || res.status===404) && ct.includes('application/json')){
+      fileServerOn = true;
+      const body = await res.json();
+      const localAt = Number(localStorage.getItem('kurej_saved_at') || 0);
+      if(res.ok && body.data && (body.savedAt||0) >= localAt){
+        state = {...state, ...body.data};
+        try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
+        localStorage.setItem('kurej_saved_at', String(body.savedAt||Date.now()));
+        setStorageStatus('💾 Loaded from data/kurej_trading.json');
+        return;
+      }
+      // No file yet (or browser copy is newer): load browser copy and write it to the file
+      try{
+        const s = localStorage.getItem(STORAGE_KEY);
+        if(s) state = {...state, ...JSON.parse(s)};
+      }catch(e){}
+      pushToFileServer();
+      return;
+    }
+  }catch(e){ /* no file server (GitHub Pages / file://) — fall through */ }
+  // Try Gist next
   gistId = localStorage.getItem('kurej_gist_id');
   if(GIST_TOKEN && gistId){
     try{
