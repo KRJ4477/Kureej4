@@ -2968,10 +2968,16 @@ function openLogTrade(id){
   document.getElementById('panel-body').innerHTML=`
     <div class="form-grid">
       ${acctSelectorHtml}
-      <div class="form-group"><label class="form-label">Date</label><input type="date" id="f-date" value="${t?t.date:new Date().toISOString().split('T')[0]}"></div>
+      <div class="form-group full"><label class="form-label">Date</label><input type="date" id="f-date" value="${t?t.date:new Date().toISOString().split('T')[0]}"></div>
       <div class="form-group"><label class="form-label">Pair</label>
         <select id="f-pair">
           ${(state.pairs||['EURUSD','GBPUSD','XAUUSD','GBPJPY']).map(p=>`<option ${t&&t.pair===p?'selected':''}>${p}</option>`).join('')}
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Direction</label>
+        <select id="f-direction">
+          <option value="Buy" ${t&&t.direction==='Buy'?'selected':''}>Buy</option>
+          <option value="Sell" ${t&&t.direction==='Sell'?'selected':''}>Sell</option>
         </select>
       </div>
       <div class="form-group"><label class="form-label">Entry Time</label><input type="text" id="f-entry-time" value="${t?t.entryTime||'':''}" placeholder="09:00"></div>
@@ -2997,12 +3003,6 @@ function openLogTrade(id){
       <div class="form-group"><label class="form-label">P/L Pips</label><input type="number" id="f-tpips" value="${t?t.targetPips||'':''}" step="1"></div>
       <div class="form-group"><label class="form-label">Risk $</label><input type="number" id="f-riskdollar" value="${t?t.riskDollar||'':''}" step="0.01" placeholder="0.00"></div>
       <div class="form-group"><label class="form-label">Net P&L ($)</label><input type="number" id="f-pnl" value="${t?t.pnl||'':''}" step="0.01"></div>
-      <div class="form-group"><label class="form-label">Direction</label>
-        <select id="f-direction">
-          <option value="Buy" ${t&&t.direction==='Buy'?'selected':''}>Buy</option>
-          <option value="Sell" ${t&&t.direction==='Sell'?'selected':''}>Sell</option>
-        </select>
-      </div>
       <div class="form-group"><label class="form-label">Result</label>
         <select id="f-result"><option ${t&&t.result==='Win'?'selected':''}>Win</option><option ${t&&t.result==='Loss'?'selected':''}>Loss</option><option ${t&&t.result==='BE'?'selected':''}>BE</option></select>
       </div>
