@@ -1177,6 +1177,18 @@ svg{display:block;}
           </div>
         </div>
 
+        <!-- CRT Options -->
+        <div class="card">
+          <div class="card-inner">
+            <div class="system-section-title">CRT Options</div>
+            <div class="tag-list" id="crt-list"></div>
+            <div class="add-tag-row">
+              <input type="text" id="new-crt" placeholder="Add CRT option…" style="flex:1;" onkeydown="if(event.key==='Enter')addCrt()">
+              <button class="btn btn-primary btn-sm" onclick="addCrt()">Add</button>
+            </div>
+          </div>
+        </div>
+
         <!-- Risk Checklist -->
         <div class="card">
           <div class="card-inner">
@@ -1502,6 +1514,7 @@ let state = {
     { label: '📓 End of Day', items: ['Journaled all trades taken','Screenshot of each trade','Reviewed what went well','Noted what to improve'] },
   ],
   models: ['ICT', 'SMC', 'Breaker', 'FVG', 'OB', 'BMS'],
+  crtOptions: ['C3', 'C4'],
   riskChecklist: ['Used correct lot size','SL at structure','Minimum 1:2 R:R','News check','Not revenge trading'],
   tradeChecklist: ['Confirmed bias','Entry on lower TF','Checked spread','Screenshot taken','Journaled post-trade'],
   htfChecklist: ['HTF trend confirmed','Key level identified','Session active','Market structure shift'],
@@ -2983,8 +2996,8 @@ function openLogTrade(id){
       <div class="form-group"><label class="form-label">Entry Time</label><input type="text" id="f-entry-time" value="${t?t.entryTime||'':''}" placeholder="09:00"></div>
       <div class="form-group"><label class="form-label">Exit Time</label><input type="text" id="f-exit-time" value="${t?t.exitTime||'':''}" placeholder="11:00"></div>
       <div class="form-group"><label class="form-label">Model</label><select id="f-model">${models}</select></div>
-      <div class="form-group"><label class="form-label">CRT</label>
-        <select id="f-crt"><option ${t&&t.crt==='C3'?'selected':''}>C3</option><option ${t&&t.crt==='C4'?'selected':''}>C4</option></select>
+      <div class="form-group"><label class="form-label" style="display:flex;align-items:center;justify-content:space-between;"><span>CRT</span><a href="#" onclick="event.preventDefault();addCrtFromForm()" style="font-size:11px;color:var(--blue);text-decoration:none;">+ Add option</a></label>
+        <select id="f-crt">${crtOptionsHtml(t?t.crt:'')}</select>
       </div>
       <div class="form-group"><label class="form-label">Session</label>
         <select id="f-session">
@@ -3539,7 +3552,9 @@ function saveReflection(id){
 function renderSystem(){
   if(!state.pairs) state.pairs=['DXY','EURUSD','GBPUSD','XAUUSD','GBPJPY'];
   renderTagList('pairs-list',state.pairs,'pair');
+  if(!state.crtOptions) state.crtOptions=['C3','C4'];
   renderTagList('models-list',state.models,'model');
+  renderTagList('crt-list',state.crtOptions,'crt');
   renderTagList('risk-list',state.riskChecklist,'risk');
   renderTagList('trade-check-list',state.tradeChecklist,'tradecheck');
   renderTagList('htf-list',state.htfChecklist,'htf');
@@ -3554,6 +3569,7 @@ function renderTagList(containerId, arr, type){
 function removeTag(type,idx){
   if(type==='pair') state.pairs.splice(idx,1);
   else if(type==='model') state.models.splice(idx,1);
+  else if(type==='crt') state.crtOptions.splice(idx,1);
   else if(type==='risk') state.riskChecklist.splice(idx,1);
   else if(type==='tradecheck') state.tradeChecklist.splice(idx,1);
   else if(type==='htf') state.htfChecklist.splice(idx,1);
@@ -3579,6 +3595,35 @@ function refreshPairDropdowns(){
   // Pre-market form pair
   const fpp=document.getElementById('fp-pair');
   if(fpp){const cur=fpp.value;fpp.innerHTML=pairs.map(p=>`<option value="${p}">${p}</option>`).join('');if(pairs.includes(cur))fpp.value=cur;}
+}
+function crtOptionsHtml(selected){
+  const opts=[...(state.crtOptions||['C3','C4'])];
+  if(selected && !opts.includes(selected)) opts.push(selected); // keep a trade's saved value even if removed from the list
+  const esc=v=>String(v).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');
+  return opts.map(o=>`<option value="${esc(o)}" ${o===selected?'selected':''}>${esc(o)}</option>`).join('');
+}
+function addCrtValue(v){
+  v=(v||'').trim();
+  if(!v) return null;
+  if(!state.crtOptions) state.crtOptions=['C3','C4'];
+  const hit=state.crtOptions.find(o=>o.toLowerCase()===v.toLowerCase());
+  if(hit) return hit;
+  state.crtOptions.push(v);
+  saveState();
+  return v;
+}
+function addCrt(){
+  const inp=document.getElementById('new-crt');
+  addCrtValue(inp.value); inp.value='';
+  renderSystem();
+}
+function addCrtFromForm(){
+  const v=prompt('New CRT option (e.g. C2, C5, Sweep):');
+  const added=addCrtValue(v);
+  if(!added) return;
+  const sel=document.getElementById('f-crt');
+  if(sel){ sel.innerHTML=crtOptionsHtml(added); sel.value=added; }
+  renderSystem();
 }
 function addModel(){const v=document.getElementById('new-model').value.trim();if(v){state.models.push(v);document.getElementById('new-model').value='';saveState();renderSystem();}}
 function addRisk(){const v=document.getElementById('new-risk').value.trim();if(v){state.riskChecklist.push(v);document.getElementById('new-risk').value='';saveState();renderSystem();}}
