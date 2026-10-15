@@ -2048,25 +2048,38 @@ function filterTrades(){
   });
 }
 
+// Signed P&L that always agrees with the trade's Result, so a loss typed as a
+// positive number (or a win typed as negative) can't flip the averages.
+function signedPnl(t){
+  const p = +t.pnl || 0;
+  if(t.result==='Win')  return Math.abs(p);
+  if(t.result==='Loss') return -Math.abs(p);
+  return p; // BE: keep as entered (small +/- from fees)
+}
+
 function calcStats(trades){
   const wins = trades.filter(t=>t.result==='Win');
   const losses = trades.filter(t=>t.result==='Loss');
-  const totalPnl = trades.reduce((s,t)=>s+ +t.pnl,0);
-  const winPnl = wins.reduce((s,t)=>s+ +t.pnl,0);
-  const lossPnl = Math.abs(losses.reduce((s,t)=>s+ +t.pnl,0));
+  const totalPnl = trades.reduce((s,t)=>s+signedPnl(t),0);
+  const winPnl = wins.reduce((s,t)=>s+signedPnl(t),0);
+  const lossPnl = Math.abs(losses.reduce((s,t)=>s+signedPnl(t),0));
   const winRate = trades.length ? wins.length/trades.length*100 : 0;
+  const lossRate = trades.length ? losses.length/trades.length*100 : 0;
   const profitFactor = lossPnl ? +(winPnl/lossPnl).toFixed(2) : winPnl>0?'∞':0;
+  // Avg Profit = average $ of winning trades; Avg Loss = average $ of losing trades (positive number)
   const avgWin = wins.length ? winPnl/wins.length : 0;
-  const avgLoss = losses.length ? -(losses.reduce((s,t)=>s+ +t.pnl,0)/losses.length) : 0;
-  const bestTrade = trades.reduce((best,t)=> +t.pnl > (best? +best.pnl:-Infinity) ? t : best, null);
-  const expectancy = trades.length ? (winRate/100*avgWin - (1-winRate/100)*avgLoss) : 0;
+  const avgLoss = losses.length ? lossPnl/losses.length : 0;
+  const bestTrade = trades.reduce((best,t)=> signedPnl(t) > (best? signedPnl(best):-Infinity) ? t : best, null);
+  // Expectancy per trade ($) = win% x avg win - loss% x avg loss  (break-evens count as 0)
+  const expectancy = trades.length ? (winRate/100*avgWin - lossRate/100*avgLoss) : 0;
   // Avg R = average of (P&L ÷ $ risked) per trade. Uses each trade's Risk $ when entered;
   // trades without Risk $ fall back to the average loss as 1R.
   let rSum = 0, rCount = 0, rFallback = 0;
   trades.forEach(t=>{
     const risk = +t.riskDollar;
-    if(risk > 0){ rSum += (+t.pnl)/risk; rCount++; }
-    else if(avgLoss > 0){ rSum += (+t.pnl)/avgLoss; rCount++; rFallback++; }
+    const pnl = signedPnl(t);
+    if(risk > 0){ rSum += pnl/risk; rCount++; }
+    else if(avgLoss > 0){ rSum += pnl/avgLoss; rCount++; rFallback++; }
   });
   const avgR = rCount ? rSum/rCount : 0;
   return {wins,losses,totalPnl,winPnl,lossPnl,winRate,profitFactor,avgWin,avgLoss,bestTrade,expectancy,avgR,rCount,rFallback,count:trades.length};
@@ -2191,7 +2204,7 @@ function renderKPIs(st){
     {label:'Profit Factor',val:`${st.profitFactor}`,cls:typeof st.profitFactor==='number'&&st.profitFactor>=1.5?'green':st.profitFactor>=1?'gold':'red',sub:''},
     {label:'Avg R Multiple',val:`${st.avgR>=0?'+':''}${st.avgR.toFixed(2)}R`,cls:st.avgR>=0?'green':'red',sub:st.rFallback?`${st.rFallback} of ${st.rCount} trades have no Risk $ (est.)`:`Expectancy: ${st.expectancy.toFixed(2)}`},
     {label:'Avg Profit / Avg Loss',cls:'',small:true,
-      html:`<span class="green">+$${st.avgWin.toFixed(0)}</span><span style="color:var(--text3)"> / </span><span class="red">-$${st.avgLoss.toFixed(0)}</span>`,
+      html:`<span class="green">+$${st.avgWin.toFixed(st.avgWin<100?2:0)}</span><span style="color:var(--text3)"> / </span><span class="red">-$${st.avgLoss.toFixed(st.avgLoss<100?2:0)}</span>`,
       sub:st.avgLoss>0 && st.avgWin>0 ? `Reward:Risk ${(st.avgWin/st.avgLoss).toFixed(2)} : 1` : 'Needs at least 1 win and 1 loss'},
     {label:'Best Trade',val:fmt(st.bestTrade?st.bestTrade.pnl:0),cls:'gold',sub:st.bestTrade?`${st.bestTrade.pair} · ${st.bestTrade.setup||'—'}`:'—'},
   ];
@@ -3289,7 +3302,11 @@ function saveTrade(id){
     stopLoss: document.getElementById('f-sl').value,
     targetPips: document.getElementById('f-tpips').value,
     riskDollar: parseFloat(document.getElementById('f-riskdollar').value)||0,
-    pnl: parseFloat(document.getElementById('f-pnl').value)||0,
+    pnl: (()=>{
+      const p = parseFloat(document.getElementById('f-pnl').value)||0;
+      const r = document.getElementById('f-result').value;
+      return r==='Win' ? Math.abs(p) : r==='Loss' ? -Math.abs(p) : p;
+    })(),
     direction: document.getElementById('f-direction').value,
     result: document.getElementById('f-result').value,
     protocol: document.getElementById('f-protocol').value,
