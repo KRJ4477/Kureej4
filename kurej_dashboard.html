@@ -2072,16 +2072,9 @@ function calcStats(trades){
   const bestTrade = trades.reduce((best,t)=> signedPnl(t) > (best? signedPnl(best):-Infinity) ? t : best, null);
   // Expectancy per trade ($) = win% x avg win - loss% x avg loss  (break-evens count as 0)
   const expectancy = trades.length ? (winRate/100*avgWin - lossRate/100*avgLoss) : 0;
-  // Avg R = average of (P&L ÷ $ risked) per trade. Uses each trade's Risk $ when entered;
-  // trades without Risk $ fall back to the average loss as 1R.
-  let rSum = 0, rCount = 0, rFallback = 0;
-  trades.forEach(t=>{
-    const risk = +t.riskDollar;
-    const pnl = signedPnl(t);
-    if(risk > 0){ rSum += pnl/risk; rCount++; }
-    else if(avgLoss > 0){ rSum += pnl/avgLoss; rCount++; rFallback++; }
-  });
-  const avgR = rCount ? rSum/rCount : 0;
+  // Avg R Multiple = Avg Profit ÷ Avg Loss (how many R the average winner pays vs the average loser)
+  const avgR = (avgWin > 0 && avgLoss > 0) ? avgWin/avgLoss : 0;
+  const rCount = 0, rFallback = 0;
   return {wins,losses,totalPnl,winPnl,lossPnl,winRate,profitFactor,avgWin,avgLoss,bestTrade,expectancy,avgR,rCount,rFallback,count:trades.length};
 }
 
@@ -2202,7 +2195,7 @@ function renderKPIs(st){
     {label:'Total P&L',val:fmt(st.totalPnl),cls:st.totalPnl>=0?'green':'red',sub:`${st.count} trades`},
     {label:'Win Rate',val:`${st.winRate.toFixed(1)}%`,cls:st.winRate>=50?'green':st.winRate>=40?'gold':'red',sub:`${st.wins.length}W / ${st.losses.length}L`},
     {label:'Profit Factor',val:`${st.profitFactor}`,cls:typeof st.profitFactor==='number'&&st.profitFactor>=1.5?'green':st.profitFactor>=1?'gold':'red',sub:''},
-    {label:'Avg R Multiple',val:`${st.avgR>=0?'+':''}${st.avgR.toFixed(2)}R`,cls:st.avgR>=0?'green':'red',sub:st.rFallback?`${st.rFallback} of ${st.rCount} trades have no Risk $ (est.)`:`Expectancy: ${st.expectancy.toFixed(2)}`},
+    {label:'Avg R Multiple',val:(st.avgWin>0&&st.avgLoss>0)?`${st.avgR.toFixed(2)}R`:'—',cls:(st.avgWin>0&&st.avgLoss>0)?(st.avgR>=1?'green':'red'):'',sub:(st.avgWin>0&&st.avgLoss>0)?`Avg Profit ÷ Avg Loss · Expectancy: $${st.expectancy.toFixed(2)}`:'Needs at least 1 win and 1 loss'},
     {label:'Avg Profit / Avg Loss',cls:'',small:true,
       html:`<span class="green">+$${st.avgWin.toFixed(st.avgWin<100?2:0)}</span><span style="color:var(--text3)"> / </span><span class="red">-$${st.avgLoss.toFixed(st.avgLoss<100?2:0)}</span>`,
       sub:st.avgLoss>0 && st.avgWin>0 ? `Reward:Risk ${(st.avgWin/st.avgLoss).toFixed(2)} : 1` : 'Needs at least 1 win and 1 loss'},
