@@ -2177,13 +2177,15 @@ function renderKPIs(st){
     {label:'Win Rate',val:`${st.winRate.toFixed(1)}%`,cls:st.winRate>=50?'green':st.winRate>=40?'gold':'red',sub:`${st.wins.length}W / ${st.losses.length}L`},
     {label:'Profit Factor',val:`${st.profitFactor}`,cls:typeof st.profitFactor==='number'&&st.profitFactor>=1.5?'green':st.profitFactor>=1?'gold':'red',sub:''},
     {label:'Avg R Multiple',val:`${st.avgR>=0?'+':''}${st.avgR.toFixed(2)}R`,cls:st.avgR>=0?'green':'red',sub:st.rFallback?`${st.rFallback} of ${st.rCount} trades have no Risk $ (est.)`:`Expectancy: ${st.expectancy.toFixed(2)}`},
-    {label:'Avg Win / Loss',val:`$${st.avgWin.toFixed(0)}`,cls:'green',sub:`Avg Loss: -$${st.avgLoss.toFixed(0)}`},
+    {label:'Avg Profit / Avg Loss',cls:'',small:true,
+      html:`<span class="green">+$${st.avgWin.toFixed(0)}</span><span style="color:var(--text3)"> / </span><span class="red">-$${st.avgLoss.toFixed(0)}</span>`,
+      sub:st.avgLoss>0 && st.avgWin>0 ? `Reward:Risk ${(st.avgWin/st.avgLoss).toFixed(2)} : 1` : 'Needs at least 1 win and 1 loss'},
     {label:'Best Trade',val:fmt(st.bestTrade?st.bestTrade.pnl:0),cls:'gold',sub:st.bestTrade?`${st.bestTrade.pair} · ${st.bestTrade.setup||'—'}`:'—'},
   ];
   document.getElementById('kpi-row').innerHTML = cards.map((c,i)=>`
     <div class="kpi-card" data-delay="${i+1}" style="animation-delay:${i*.06}s">
       <div class="kpi-label">${c.label}</div>
-      <div class="kpi-val ${c.cls} mono">${c.val}</div>
+      <div class="kpi-val ${c.cls} mono"${c.small?' style="font-size:19px;white-space:nowrap;margin:10px 0 8px;"':''}>${c.html||c.val}</div>
       <div class="kpi-sub">${c.sub}</div>
     </div>`).join('');
 }
@@ -2253,7 +2255,7 @@ function renderDonut(st){
       <div class="donut-stats">
         <div class="donut-stat"><span class="donut-stat-label">Wins</span><span class="donut-stat-val green">${st.wins.length}</span></div>
         <div class="donut-stat"><span class="donut-stat-label">Losses</span><span class="donut-stat-val red">${st.losses.length}</span></div>
-        <div class="donut-stat"><span class="donut-stat-label">Avg Win</span><span class="donut-stat-val green">$${st.avgWin.toFixed(0)}</span></div>
+        <div class="donut-stat"><span class="donut-stat-label">Avg Profit</span><span class="donut-stat-val green">$${st.avgWin.toFixed(0)}</span></div>
         <div class="donut-stat"><span class="donut-stat-label">Avg Loss</span><span class="donut-stat-val red">-$${st.avgLoss.toFixed(0)}</span></div>
         <div class="donut-stat"><span class="donut-stat-label">Best</span><span class="donut-stat-val gold">$${Math.max(...(st.wins.map(t=> +t.pnl)||[0])).toFixed(0)}</span></div>
         <div class="donut-stat"><span class="donut-stat-label">Worst</span><span class="donut-stat-val red">-$${Math.abs(Math.min(...(st.losses.map(t=> +t.pnl)||[0]))).toFixed(0)}</span></div>
