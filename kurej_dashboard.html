@@ -2341,10 +2341,12 @@ function renderSessionGrid(trades){
   });
   document.getElementById('session-grid').innerHTML = Object.entries(map).length ? Object.entries(map).map(([s,v])=>{
     const total=v.wins+v.losses;
-    const wr=total?(v.wins/total*100).toFixed(0)+'%':'—';
+    const wrNum=total?v.wins/total*100:null;
+    const wr=total?wrNum.toFixed(0)+'%':'—';
+    const wrCls=wrNum===null?'':wrNum>=50?'green':wrNum>=40?'gold':'red';
     return `<div class="session-card">
       <div class="session-name">${s}</div>
-      <div class="session-stat"><span class="text3">Win Rate</span><span class="session-val ${+wr>50?'green':'red'}">${wr}</span></div>
+      <div class="session-stat"><span class="text3">Win Rate</span><span class="session-val ${wrCls}">${wr}</span></div>
       <div class="session-stat"><span class="text3">W/L</span><span class="session-val">${v.wins}W / ${v.losses}L</span></div>
       <div class="session-stat"><span class="text3">Trades</span><span class="session-val">${total}</span></div>
       <div class="session-stat"><span class="text3">P&L</span><span class="session-val ${v.pnl>=0?'green':'red'}">${v.pnl>=0?'+':''}$${Math.abs(v.pnl).toFixed(0)}</span></div>
