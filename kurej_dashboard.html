@@ -2806,7 +2806,7 @@ function renderJournal(){
     <tr onclick="toggleTradeExpand('${t.id}')" style="cursor:pointer;">
       <td class="mono text2">${t.date}</td>
       ${acctCol}
-      <td><span class="tag">${t.pair}</span></td>
+      <td><span class="tag">${t.pair}</span>${t.direction?` <span class="badge" style="font-size:10px;padding:2px 8px;background:${t.direction==='Buy'?'rgba(0,212,138,0.15)':'rgba(255,77,109,0.15)'};color:${t.direction==='Buy'?'var(--green)':'var(--red)'};">${t.direction.toUpperCase()}</span>`:''}</td>
       <td>${fmtPnl(t.pnl)}</td>
       <td><span class="badge badge-${t.result.toLowerCase()}">${t.result}</span></td>
       <td class="text2">${t.model||'—'}</td>
@@ -2827,7 +2827,7 @@ function renderJournal(){
           <div><div class="ps-label">P/L Pips</div><div class="mono">${t.targetPips||'—'}${t.targetPips?'pip':''}</div></div>
           ${t.riskDollar?`<div><div class="ps-label">Risk $</div><div class="mono red">$${parseFloat(t.riskDollar).toFixed(2)}</div></div>`:''}
           <div><div class="ps-label">CRT</div><div class="mono">${t.crt||'—'}</div></div>
-          <div><div class="ps-label">Commission</div><div class="mono red">${t.commission||'—'}</div></div>
+          <div><div class="ps-label">Direction</div><div class="mono" style="color:${t.direction==='Buy'?'var(--green)':t.direction==='Sell'?'var(--red)':'var(--text3)'};">${t.direction?t.direction.toUpperCase():'—'}</div></div>
           <div><div class="ps-label">Session</div><div>${t.session||'—'}</div></div>
           ${t.entryTF?`<div><div class="ps-label">Entry TF</div><div class="mono">${t.entryTF}</div></div>`:''}
           ${t.confluences?`<div style="grid-column:1/-1"><div class="ps-label">Confluences</div><div>${t.confluences}</div></div>`:''}
@@ -2995,7 +2995,12 @@ function openLogTrade(id){
       <div class="form-group"><label class="form-label">P/L Pips</label><input type="number" id="f-tpips" value="${t?t.targetPips||'':''}" step="1"></div>
       <div class="form-group"><label class="form-label">Risk $</label><input type="number" id="f-riskdollar" value="${t?t.riskDollar||'':''}" step="0.01" placeholder="0.00"></div>
       <div class="form-group"><label class="form-label">Net P&L ($)</label><input type="number" id="f-pnl" value="${t?t.pnl||'':''}" step="0.01"></div>
-      <div class="form-group"><label class="form-label">Commission</label><input type="number" id="f-commission" value="${t?t.commission||'':''}" step="0.01"></div>
+      <div class="form-group"><label class="form-label">Direction</label>
+        <select id="f-direction">
+          <option value="Buy" ${t&&t.direction==='Buy'?'selected':''}>Buy</option>
+          <option value="Sell" ${t&&t.direction==='Sell'?'selected':''}>Sell</option>
+        </select>
+      </div>
       <div class="form-group"><label class="form-label">Result</label>
         <select id="f-result"><option ${t&&t.result==='Win'?'selected':''}>Win</option><option ${t&&t.result==='Loss'?'selected':''}>Loss</option><option ${t&&t.result==='BE'?'selected':''}>BE</option></select>
       </div>
@@ -3268,7 +3273,7 @@ function saveTrade(id){
     targetPips: document.getElementById('f-tpips').value,
     riskDollar: parseFloat(document.getElementById('f-riskdollar').value)||0,
     pnl: parseFloat(document.getElementById('f-pnl').value)||0,
-    commission: document.getElementById('f-commission').value,
+    direction: document.getElementById('f-direction').value,
     result: document.getElementById('f-result').value,
     protocol: document.getElementById('f-protocol').value,
     emotionalState: document.getElementById('f-emotion').value,
@@ -5321,7 +5326,7 @@ function mt5ConfirmImport(){
       confluences:'',
       management: '',
       screenshot: '',
-      commission: String(r._comm||0),
+      direction:  r._direction || '',
       riskChecklist:{}, tradeChecklist:{}, htfChecklist:{},
     };
     if(!state.trades) state.trades = [];
