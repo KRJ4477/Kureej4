@@ -1724,7 +1724,10 @@ function renderAccounts(){
     const equity  = a.balance + st.totalPnl;
     const ddPct   = a.maxDD    || 0;
     const tgtPct  = a.profitTarget || 0;
-    const ddUsed  = a.balance  ? Math.abs(Math.min(0, equity - a.balance) / a.balance * 100) : 0;
+    const dd      = ddSeries(trades, a.balance);
+    const curBelow = Math.max(0, a.balance - equity);                       // $ currently below start balance
+    const ddUsed  = a.balance ? curBelow / a.balance * 100 : 0;              // % currently used
+    const ddWorst = a.balance ? dd.below / a.balance * 100 : 0;              // worst % ever reached
     const tgtProgress = a.balance && tgtPct ? Math.max(0, st.totalPnl / (a.balance * tgtPct / 100) * 100) : 0;
     const ddFill  = ddPct ? Math.min(100, ddUsed / ddPct * 100) : 0;
     const ddWarn  = ddFill > 75;
@@ -1777,12 +1780,13 @@ function renderAccounts(){
 
         ${ddPct ? `<div class="progress-wrap ${ddWarn?'warn-bar':''}">
           <div class="progress-label">
-            <span>Drawdown ${ddUsed.toFixed(1)}% / Max ${ddPct}% ${ddWarn?'⚠️':''}</span>
-            <span class="mono red">-$${Math.abs(equity-a.balance).toFixed(0)}</span>
+            <span>Drawdown ${ddUsed.toFixed(2)}% / Max ${ddPct}% ${ddWarn?'⚠️':''}</span>
+            <span class="mono ${equity>=a.balance?'green':'red'}">${equity>=a.balance?'+':'-'}$${Math.abs(equity-a.balance).toLocaleString('en-US',{maximumFractionDigits:0})}</span>
           </div>
           <div class="progress-track">
             <div class="progress-fill" style="width:${Math.min(100,ddFill).toFixed(1)}%;background:${ddWarn?'var(--red)':'var(--red)'};opacity:${ddWarn?'1':'0.6'};"></div>
           </div>
+          <div style="font-size:11px;color:var(--text3);margin-top:5px;">Worst reached: ${ddWorst.toFixed(2)}% ($${dd.below.toLocaleString('en-US',{maximumFractionDigits:0})}) · Buffer left: $${Math.max(0,a.balance*ddPct/100-curBelow).toLocaleString('en-US',{maximumFractionDigits:0})}${ddWorst>=ddPct?' · ⚠️ limit was hit':''}</div>
         </div>` : ''}
 
         ${recent.length ? `<div class="acct-mini-trades">
@@ -2061,6 +2065,22 @@ function signedPnl(t){
   if(t.result==='Win')  return Math.abs(p);
   if(t.result==='Loss') return -Math.abs(p);
   return p; // BE: keep as entered (small +/- from fees)
+}
+
+// Walk trades in order and return drawdown figures against a starting balance.
+//  below = worst $ the balance ever sat BELOW the starting balance (static max-loss, FTMO-style)
+//  peakDD = largest peak-to-trough $ drop, with the % measured from the peak it fell from
+function ddSeries(trades, startBal){
+  const sorted = [...trades].sort((a,b)=>(a.date||'').localeCompare(b.date||'')||((a.entryTime||a.time||'').localeCompare(b.entryTime||b.time||'')));
+  let run = startBal||0, peak = run, below = 0, peakDD = 0, peakDDpct = 0;
+  sorted.forEach(t=>{
+    run += signedPnl(t);
+    if(run > peak) peak = run;
+    below = Math.max(below, (startBal||0) - run);
+    const dd = peak - run;
+    if(dd > peakDD){ peakDD = dd; peakDDpct = peak>0 ? dd/peak*100 : 0; }
+  });
+  return {equity:run, peak, below, peakDD, peakDDpct};
 }
 
 function calcStats(trades){
@@ -3785,7 +3805,7 @@ function renderStreakAndDrawdown(trades){
   if(!el) return;
   // Fall back to all trades across all accounts if filtered set is empty
   const allTrades = (state.trades||[]);
-  const data = trades.length ? trades : allTrades;
+  const data = trades;
   if(!data.length){
     el.innerHTML='<div style="color:var(--text3);font-size:13px;padding:8px 0;">Log trades to see streak & drawdown stats.</div>';
     return;
@@ -3806,17 +3826,17 @@ function renderStreakAndDrawdown(trades){
   // Max loss streak
   let maxLoss=0; cur=0;
   sorted.forEach(t=>{if(t.result==='Loss'){cur++;maxLoss=Math.max(maxLoss,cur);}else cur=0;});
-  // Max drawdown
-  const activeAcct = (state.accounts||[]).find(a=>a.id===state.activeAccountId);
-  const startBal = activeAcct ? activeAcct.balance : (state.startingBalance||0);
-  let peak=startBal||0, maxDD=0, runBal=startBal||0;
-  sorted.forEach(t=>{
-    runBal += +t.pnl;
-    if(runBal>peak) peak=runBal;
-    const dd=peak-runBal;
-    if(dd>maxDD) maxDD=dd;
-  });
-  const maxDDpct = peak ? (maxDD/peak*100) : 0;
+  // Max drawdown — starting balance follows the current view (one account, one firm, or all accounts)
+  const accts = state.accounts||[];
+  const view = state.acctSelectorView || 'all';
+  const activeAcct = accts.find(a=>a.id===state.activeAccountId);
+  let startBal;
+  if(activeAcct) startBal = activeAcct.balance;
+  else if(view.startsWith('firm:')) startBal = accts.filter(a=>a.firm===view.slice(5)).reduce((t,a)=>t+(+a.balance||0),0);
+  else if(accts.length) startBal = accts.reduce((t,a)=>t+(+a.balance||0),0);
+  else startBal = state.startingBalance||0;
+  const ddr = ddSeries(sorted, startBal);
+  const maxDD = ddr.peakDD, maxDDpct = ddr.peakDDpct;
   const streakCol = streakType==='Win'?'var(--green)':streakType==='Loss'?'var(--red)':'var(--text3)';
   el.innerHTML=`
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
