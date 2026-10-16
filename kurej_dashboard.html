@@ -824,30 +824,11 @@ svg{display:block;}
               <span id="acct-check-all" style="color:var(--blue);font-size:14px;">✓</span>
             </div>
             <div style="height:1px;background:var(--border);margin:0 12px;"></div>
-            <div id="acct-firm-ftmo" onclick="selectAcctView('firm:FTMO')" style="
-              display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;
-              font-size:13px;transition:background .15s;
-            " onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">
-              <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#4d9fff;flex-shrink:0;box-shadow:0 0 6px #4d9fff88;"></span>
-              <div style="flex:1;">
-                <div style="font-weight:600;color:var(--text);">FTMO</div>
-                <div style="font-size:11px;color:var(--text3);" id="ftmo-sub">All FTMO accounts</div>
-              </div>
-              <span id="acct-check-ftmo" style="color:var(--blue);font-size:14px;display:none;">✓</span>
-            </div>
-            <div id="acct-firm-fundednext" onclick="selectAcctView('firm:FundedNext')" style="
-              display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;
-              font-size:13px;transition:background .15s;
-            " onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">
-              <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#00d48a;flex-shrink:0;box-shadow:0 0 6px #00d48a88;"></span>
-              <div style="flex:1;">
-                <div style="font-weight:600;color:var(--text);">FundedNext</div>
-                <div style="font-size:11px;color:var(--text3);" id="fundednext-sub">All FundedNext accounts</div>
-              </div>
-              <span id="acct-check-fundednext" style="color:var(--blue);font-size:14px;display:none;">✓</span>
-            </div>
+            <div id="acct-dropdown-firms"></div>
             <div style="height:1px;background:var(--border);margin:0 12px;"></div>
             <div id="acct-dropdown-individual" style="max-height:200px;overflow-y:auto;"></div>
+            <div style="height:1px;background:var(--border);margin:0 12px;"></div>
+            <div onclick="closeAcctDropdown();openAccountForm(null)" style="display:flex;align-items:center;gap:8px;padding:10px 14px;cursor:pointer;font-size:13px;color:var(--blue);font-weight:600;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">＋ Add Account</div>
           </div>
         </div>
         <button class="btn btn-primary" id="topbar-action" onclick="topbarAction()">+ Log Trade</button>
@@ -1708,6 +1689,16 @@ function acctColor(id){
   const a = (state.accounts||[]).find(x=>x.id===id);
   return a ? a.color||'#4d9fff' : '#4d9fff';
 }
+function firmKey(name){ return String(name||'other').replace(/[^a-z0-9]/gi,'').toLowerCase()||'other'; }
+function firmColorOf(name){
+  if(name==='FTMO') return '#4d9fff';
+  if(name==='FundedNext') return '#00d48a';
+  const pal=['#ffd166','#b47eff','#ff9f4d','#ff4d6d','#4dffe0','#7dd3fc'];
+  let h=0; for(const ch of String(name||'')) h=(h*31+ch.charCodeAt(0))>>>0;
+  return pal[h%pal.length];
+}
+function acctDropdownEdit(id,ev){ ev.stopPropagation(); closeAcctDropdown(); openAccountForm(id); }
+function acctDropdownDelete(id,ev){ ev.stopPropagation(); closeAcctDropdown(); deleteAccount(id); }
 function acctName(id){
   if(!id) return 'All Accounts';
   const a = (state.accounts||[]).find(x=>x.id===id);
@@ -1818,7 +1809,9 @@ function deleteAccount(id){
   if(!confirm('Delete this account? Trades linked to it will remain but lose their account link.')) return;
   state.accounts = (state.accounts||[]).filter(a=>a.id!==id);
   if(state.activeAccountId===id) state.activeAccountId=null;
+  if(state.acctSelectorView==='id:'+id) state.acctSelectorView='all';
   saveState(); renderAccounts(); updateAccountDisplay();
+  const dp=document.getElementById('page-dashboard'); if(dp && dp.classList.contains('active')) renderDashboard();
 }
 
 function goToJournalForAccount(id){
@@ -2165,7 +2158,7 @@ function renderDashboard(){
       const firmTrades = filterTrades();
       const firmPnl = firmTrades.reduce((s,t)=>s+(+t.pnl),0);
       const firmBal = firmAccts.reduce((s,a)=>s+a.balance,0);
-      const firmColor = firmName==='FTMO'?'#4d9fff':'#00d48a';
+      const firmColor = firmColorOf(firmName);
       banner.innerHTML=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:20px;padding:12px 16px;background:var(--glass2);border:1px solid var(--border);border-left:3px solid ${firmColor};border-radius:12px;flex-wrap:wrap;">
         <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${firmColor};box-shadow:0 0 8px ${firmColor}88;flex-shrink:0;"></span>
         <span style="font-weight:700;font-size:15px;">${firmName}</span>
@@ -4311,19 +4304,30 @@ function updateAccountDisplay(){
           <div class="mono" style="font-size:10px;color:${pnl>=0?'var(--green)':'var(--red)'};">${pnl>=0?'+':''}$${Math.abs(pnl).toFixed(0)}</div>
         </div>
         <span style="color:var(--blue);font-size:14px;${isActive?'':'display:none'}">✓</span>
+        <button title="Edit account" onclick="acctDropdownEdit('${a.id}',event)" style="background:none;border:none;color:var(--text3);cursor:pointer;font-size:13px;padding:2px 4px;">✎</button>
+        <button title="Remove account" onclick="acctDropdownDelete('${a.id}',event)" style="background:none;border:none;color:var(--red);cursor:pointer;font-size:15px;padding:2px 4px;">×</button>
       </div>`;
     }).join('');
   }
 
-  // Update FTMO sub-label
-  const ftmoAccts = accts.filter(a=>a.firm==='FTMO');
-  const ftmoSub = document.getElementById('ftmo-sub');
-  if(ftmoSub) ftmoSub.textContent = ftmoAccts.length ? `${ftmoAccts.length} account${ftmoAccts.length>1?'s':''}` : 'No FTMO accounts';
-
-  // Update FundedNext sub-label
-  const fnAccts = accts.filter(a=>a.firm==='FundedNext');
-  const fnSub = document.getElementById('fundednext-sub');
-  if(fnSub) fnSub.textContent = fnAccts.length ? `${fnAccts.length} account${fnAccts.length>1?'s':''}` : 'No FundedNext accounts';
+  // Firm groups: built from your accounts, so they appear/disappear as you add or remove accounts
+  const firms = [...new Set(accts.map(x=>x.firm).filter(Boolean))];
+  const curView = state.acctSelectorView || 'all';
+  if(curView.startsWith('firm:') && !firms.includes(curView.slice(5))){ state.acctSelectorView='all'; state.activeAccountId=null; }
+  const firmsEl = document.getElementById('acct-dropdown-firms');
+  if(firmsEl){
+    firmsEl.innerHTML = firms.map(f=>{
+      const n = accts.filter(x=>x.firm===f).length;
+      const col = firmColorOf(f);
+      const on = (state.acctSelectorView||'all')==='firm:'+f;
+      const fe = f.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+      return `<div data-firm="${fe}" onclick="selectAcctView('firm:'+this.dataset.firm)" style="display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer;font-size:13px;transition:background .15s;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background=''">
+        <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${col};flex-shrink:0;box-shadow:0 0 6px ${col}88;"></span>
+        <div style="flex:1;"><div style="font-weight:600;color:var(--text);">${fe}</div><div style="font-size:11px;color:var(--text3);">${n} account${n!==1?'s':''}</div></div>
+        <span id="acct-check-${firmKey(f)}" style="color:var(--blue);font-size:14px;${on?'':'display:none;'}">✓</span>
+      </div>`;
+    }).join('');
+  }
 
   // Determine current view label
   const view = state.acctSelectorView || 'all';
@@ -5473,10 +5477,7 @@ function refreshAcctSelectorLabel(){
   const view = state.acctSelectorView || 'all';
 
   // Clear checkmarks
-  ['all','ftmo','fundednext'].forEach(k=>{
-    const c = document.getElementById('acct-check-'+k);
-    if(c) c.style.display='none';
-  });
+  document.querySelectorAll('[id^="acct-check-"]').forEach(c=>{ c.style.display='none'; });
 
   if(view === 'all'){
     const totalPnl = state.trades.reduce((s,t)=>s+(+t.pnl),0);
@@ -5490,9 +5491,9 @@ function refreshAcctSelectorLabel(){
     const firmAccts = accts.filter(a=>a.firm===firmName);
     const firmTrades = state.trades.filter(t=> firmAccts.some(a=>a.id===t.accountId));
     const pnl = firmTrades.reduce((s,t)=>s+(+t.pnl),0);
-    const color = firmName==='FTMO' ? '#4d9fff' : '#00d48a';
+    const color = firmColorOf(firmName);
     el.innerHTML = `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${color};margin-right:6px;"></span>${firmName} &nbsp;<span style="color:var(--text3);font-size:11px;">|</span>&nbsp; <span class="mono" style="font-size:11px;">${firmAccts.length} acct${firmAccts.length!==1?'s':''}</span> <span class="mono" style="font-size:10px;color:${pnl>=0?'var(--green)':'var(--red)'};">${pnl>=0?'+':''}$${Math.abs(pnl).toFixed(0)}</span>`;
-    const key = firmName==='FTMO'?'ftmo':'fundednext';
+    const key = firmKey(firmName);
     const c=document.getElementById('acct-check-'+key); if(c) c.style.display='';
   } else if(view.startsWith('id:')){
     const id = view.replace('id:','');
