@@ -1165,6 +1165,19 @@ svg{display:block;}
     <div class="page" id="page-system">
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:900px;" class="anim-1">
 
+        <!-- Setups -->
+        <div class="card">
+          <div class="card-inner">
+            <div class="system-section-title">Setups</div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:8px;">Click a setup to rename it (updates all your trades). You can also type any new setup directly when logging a trade.</div>
+            <div class="tag-list" id="setups-list"></div>
+            <div class="add-tag-row">
+              <input type="text" id="new-setup" placeholder="Add setup…" style="flex:1;" onkeydown="if(event.key==='Enter')addSetup()">
+              <button class="btn btn-primary btn-sm" onclick="addSetup()">Add</button>
+            </div>
+          </div>
+        </div>
+
         <!-- Trading Models -->
         <div class="card">
           <div class="card-inner">
@@ -3017,7 +3030,7 @@ function openLogTrade(id){
           ${['','1M','2M','3M','5M','15M','30M','1H','4H','D'].map(tf=>`<option value="${tf}" ${t&&t.entryTF===tf?'selected':''}>${tf||'— Select —'}</option>`).join('')}
         </select>
       </div>
-      <div class="form-group"><label class="form-label">Setup</label><input type="text" id="f-setup" value="${t?t.setup||'':''}" placeholder="FVG, OB, BMS..."></div>
+      <div class="form-group"><label class="form-label">Setup</label><input type="text" id="f-setup" list="setup-options" autocomplete="off" value="${t?escAttr(t.setup||''):''}" placeholder="Type your own or pick a saved setup…"><datalist id="setup-options">${allSetups().map(x=>`<option value="${escAttr(x)}"></option>`).join('')}</datalist></div>
       <div class="form-group"><label class="form-label">Entry Price</label><input type="number" id="f-entry" value="${t?t.entryPrice||'':''}" step="0.00001"></div>
       <div class="form-group"><label class="form-label">Exit Price</label><input type="number" id="f-exit" value="${t?t.exitPrice||'':''}" step="0.00001"></div>
       <div class="form-group"><label class="form-label">Stop Loss</label><input type="number" id="f-sl" value="${t?t.stopLoss||'':''}" step="0.00001"></div>
@@ -3289,7 +3302,7 @@ function saveTrade(id){
     crt: document.getElementById('f-crt').value,
     session: document.getElementById('f-session').value,
     entryTF: document.getElementById('f-tf').value,
-    setup: document.getElementById('f-setup').value,
+    setup: document.getElementById('f-setup').value.trim(),
     entryPrice: document.getElementById('f-entry').value,
     exitPrice: document.getElementById('f-exit').value,
     stopLoss: document.getElementById('f-sl').value,
@@ -3566,6 +3579,7 @@ function renderSystem(){
   renderTagList('pairs-list',state.pairs,'pair');
   if(!state.crtOptions) state.crtOptions=['C3','C4'];
   renderTagList('models-list',state.models,'model');
+  renderSetupList();
   renderTagList('crt-list',state.crtOptions,'crt');
   renderTagList('risk-list',state.riskChecklist,'risk');
   renderTagList('trade-check-list',state.tradeChecklist,'tradecheck');
@@ -3636,6 +3650,42 @@ function addCrtFromForm(){
   const sel=document.getElementById('f-crt');
   if(sel){ sel.innerHTML=crtOptionsHtml(added); sel.value=added; }
   renderSystem();
+}
+// ── Setups: manual + editable ──
+function allSetups(){
+  const set = new Set((state.setups||[]).filter(Boolean));
+  (state.trades||[]).forEach(t=>{ if(t.setup && t.setup.trim()) set.add(t.setup.trim()); });
+  return [...set];
+}
+function escAttr(x){ return String(x).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;'); }
+function renderSetupList(){
+  const el = document.getElementById('setups-list'); if(!el) return;
+  const list = allSetups();
+  el.innerHTML = list.length ? list.map(x=>`
+    <div class="tag-item"><span style="cursor:pointer;" title="Click to rename" onclick="renameSetup(this.dataset.n)" data-n="${escAttr(x)}">${escAttr(x)} ✎</span><button class="tag-remove" onclick="removeSetup(this.dataset.n)" data-n="${escAttr(x)}">×</button></div>`).join('')
+    : '<div style="font-size:12px;color:var(--text3);">No setups yet — add one below or type one when logging a trade.</div>';
+}
+function addSetup(){
+  const inp=document.getElementById('new-setup'); const v=inp.value.trim(); if(!v) return;
+  if(!state.setups) state.setups=[];
+  if(!allSetups().includes(v)) state.setups.push(v);
+  inp.value=''; saveState(); renderSetupList();
+}
+function renameSetup(oldName){
+  const nv = prompt('Rename setup (updates all trades that use it):', oldName);
+  if(nv===null) return;
+  const v = nv.trim(); if(!v || v===oldName) return;
+  state.setups = (state.setups||[]).filter(x=>x!==oldName);
+  if(!state.setups.includes(v)) state.setups.push(v);
+  (state.trades||[]).forEach(t=>{ if((t.setup||'').trim()===oldName) t.setup=v; });
+  saveState(); renderSetupList();
+  if(typeof renderAll==='function') try{renderAll();}catch(e){}
+}
+function removeSetup(name){
+  const used = (state.trades||[]).filter(t=>(t.setup||'').trim()===name).length;
+  if(used){ alert(`"${name}" is used on ${used} trade${used>1?'s':''}, so it can't be removed. Rename it instead (click it), or edit those trades first.`); return; }
+  state.setups = (state.setups||[]).filter(x=>x!==name);
+  saveState(); renderSetupList();
 }
 function addModel(){const v=document.getElementById('new-model').value.trim();if(v){state.models.push(v);document.getElementById('new-model').value='';saveState();renderSystem();}}
 function addRisk(){const v=document.getElementById('new-risk').value.trim();if(v){state.riskChecklist.push(v);document.getElementById('new-risk').value='';saveState();renderSystem();}}
