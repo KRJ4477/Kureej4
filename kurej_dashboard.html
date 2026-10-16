@@ -365,10 +365,10 @@ svg{display:block;}
 .emotion-anxious{background:rgba(255,209,102,0.15);color:var(--gold);border:1px solid rgba(255,209,102,0.25);}
 .emotion-fearful{background:rgba(255,150,50,0.15);color:#ff9632;border:1px solid rgba(255,150,50,0.25);}
 .emotion-greedy{background:rgba(180,126,255,0.15);color:#b47eff;border:1px solid rgba(180,126,255,0.25);}
-.emotion-revenge{background:rgba(255,77,109,0.15);color:var(--red);border:1px solid rgba(255,77,109,0.25);}
+.emotion-revenge{background:rgba(255,46,99,0.15);color:#ff2e63;border:1px solid rgba(255,46,99,0.25);}
 .emotion-overconfident{background:rgba(255,100,200,0.15);color:#ff64c8;border:1px solid rgba(255,100,200,0.25);}
-.emotion-frustrated{background:rgba(255,77,77,0.15);color:#ff4d4d;border:1px solid rgba(255,77,77,0.25);}
-.emotion-fomo{background:rgba(255,180,50,0.15);color:#ffb432;border:1px solid rgba(255,180,50,0.25);}
+.emotion-frustrated{background:rgba(255,90,54,0.15);color:#ff5a36;border:1px solid rgba(255,90,54,0.25);}
+.emotion-fomo{background:rgba(229,152,155,0.15);color:#e5989b;border:1px solid rgba(229,152,155,0.25);}
 .emotion-neutral{background:rgba(155,168,187,0.15);color:var(--text2);border:1px solid rgba(155,168,187,0.25);}
 
 /* Right panel / slide-in */
@@ -2417,15 +2417,12 @@ function renderEmotionalAvg(trades){
   const EMOTIONS = ['Calm','Focused','Confident','Patient','Anxious','Fearful','Greedy','Revenge','Overconfident','Frustrated','FOMO','Neutral'];
   const EMOTION_SCORE = {Calm:8,Focused:9,Confident:8,Patient:9,Anxious:4,Fearful:3,Greedy:3,Revenge:1,Overconfident:3,Frustrated:2,FOMO:2,Neutral:6};
   const EMOTION_COLOR = {
-    Calm:'var(--green)',Focused:'var(--blue)',Confident:'#b2ff59',Patient:'#4de6ff',
-    Anxious:'var(--gold)',Fearful:'#ff9632',Greedy:'#b47eff',Revenge:'var(--red)',
-    Overconfident:'#ff64c8',Frustrated:'#ff4d4d',FOMO:'#ffb432',Neutral:'var(--text2)'
+    Calm:'#00d48a',Focused:'#4d9fff',Confident:'#b2ff59',Patient:'#4de6ff',
+    Anxious:'#ffd166',Fearful:'#ff9632',Greedy:'#b47eff',Revenge:'#ff2e63',
+    Overconfident:'#ff64c8',Frustrated:'#ff5a36',FOMO:'#e5989b',Neutral:'#9ba8bb'
   };
-  const EMOTION_BG = {
-    Calm:'rgba(0,212,138,0.15)',Focused:'rgba(77,159,255,0.15)',Confident:'rgba(178,255,89,0.15)',Patient:'rgba(77,230,255,0.15)',
-    Anxious:'rgba(255,209,102,0.15)',Fearful:'rgba(255,150,50,0.15)',Greedy:'rgba(180,126,255,0.15)',Revenge:'rgba(255,77,109,0.15)',
-    Overconfident:'rgba(255,100,200,0.15)',Frustrated:'rgba(255,77,77,0.15)',FOMO:'rgba(255,180,50,0.15)',Neutral:'rgba(155,168,187,0.15)'
-  };
+  const hexA = (hex,a)=>{ const n=parseInt(hex.slice(1),16); return `rgba(${n>>16&255},${n>>8&255},${n&255},${a})`; };
+  const EMOTION_BG = Object.fromEntries(Object.entries(EMOTION_COLOR).map(([k,c])=>[k,hexA(c,0.15)]));
   const emotionClass={Calm:'emotion-calm',Focused:'emotion-focused',Confident:'emotion-confident',Patient:'emotion-patient',Anxious:'emotion-anxious',Fearful:'emotion-fearful',Greedy:'emotion-greedy',Revenge:'emotion-revenge',Overconfident:'emotion-overconfident',Frustrated:'emotion-frustrated',FOMO:'emotion-fomo',Neutral:'emotion-neutral'};
 
   const map = {};
@@ -2435,7 +2432,7 @@ function renderEmotionalAvg(trades){
   trades.forEach(t=>{
     const e = t.emotionalState||'Neutral';
     if(!map[e]) map[e]={pnl:0,wins:0,losses:0,count:0,ratings:[]};
-    map[e].pnl += +t.pnl;
+    map[e].pnl += signedPnl(t);
     map[e].count++;
     if(t.result==='Win') map[e].wins++;
     else if(t.result==='Loss') map[e].losses++;
@@ -2447,7 +2444,8 @@ function renderEmotionalAvg(trades){
   const avgScore = scoreN ? (scoreSum/scoreN).toFixed(1) : '—';
   const avgRatingRaw = ratingCount ? ratingSum/ratingCount : null;
   const avgRating = avgRatingRaw !== null ? (GRADE_LABEL[Math.round(avgRatingRaw)] || '—') : '—';
-  const scoreColor = avgScore>=7?'var(--green)':avgScore>=5?'var(--gold)':'var(--red)';
+  const scoreNum = scoreN ? scoreSum/scoreN : 0;
+  const scoreColor = scoreNum>=7?'var(--green)':scoreNum>=5?'var(--gold)':'var(--red)';
 
   const sorted = Object.entries(map).sort((a,b)=>b[1].count-a[1].count);
   const maxCount = Math.max(...sorted.map(([,v])=>v.count));
@@ -2472,12 +2470,12 @@ function renderEmotionalAvg(trades){
       ${bestEmotion?`<div style="display:flex;align-items:center;gap:8px;background:var(--glass2);border:1px solid var(--border2);border-radius:10px;padding:8px 14px;">
         <span style="font-size:13px;color:var(--text3);">Best</span>
         <span class="badge ${emotionClass[bestEmotion]||''}">${bestEmotion}</span>
-        <span style="font-family:var(--mono);font-size:13px;font-weight:600;color:var(--green);">+$${Math.abs(map[bestEmotion].pnl).toFixed(0)}</span>
+        <span style="font-family:var(--mono);font-size:13px;font-weight:600;color:${map[bestEmotion].pnl>=0?'var(--green)':'var(--red)'};">${map[bestEmotion].pnl>=0?'+':'-'}$${Math.abs(map[bestEmotion].pnl).toFixed(0)}</span>
       </div>`:''}
       ${worstEmotion&&worstEmotion!==bestEmotion?`<div style="display:flex;align-items:center;gap:8px;background:var(--glass2);border:1px solid var(--border2);border-radius:10px;padding:8px 14px;">
         <span style="font-size:13px;color:var(--text3);">Worst</span>
         <span class="badge ${emotionClass[worstEmotion]||''}">${worstEmotion}</span>
-        <span style="font-family:var(--mono);font-size:13px;font-weight:600;color:var(--red);">-$${Math.abs(map[worstEmotion].pnl).toFixed(0)}</span>
+        <span style="font-family:var(--mono);font-size:13px;font-weight:600;color:${map[worstEmotion].pnl>=0?'var(--green)':'var(--red)'};">${map[worstEmotion].pnl>=0?'+':'-'}$${Math.abs(map[worstEmotion].pnl).toFixed(0)}</span>
       </div>`:''}
       ${mostFrequent?`<div style="display:flex;align-items:center;gap:8px;background:var(--glass2);border:1px solid var(--border2);border-radius:10px;padding:8px 14px;">
         <span style="font-size:13px;color:var(--text3);">Most Common</span>
@@ -2490,13 +2488,13 @@ function renderEmotionalAvg(trades){
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px;">
       ${sorted.map(([e,v])=>{
         const wr = (v.wins+v.losses) ? Math.round(v.wins/(v.wins+v.losses)*100) : null;
-        const pnlColor = v.pnl>=0?'var(--green)':'var(--red)';
+        const pnlColor = v.pnl>0?'var(--green)':v.pnl<0?'var(--red)':'var(--text2)';
         const color = EMOTION_COLOR[e]||'var(--text2)';
         const bg = EMOTION_BG[e]||'rgba(155,168,187,0.1)';
-        return `<div style="background:${bg};border:1px solid ${color}33;border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:5px;">
+        return `<div style="background:${bg};border:1px solid ${hexA(color,0.35)};border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:5px;">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:6px;">
             <span class="badge ${emotionClass[e]||''}">${e}</span>
-            <span style="font-family:var(--mono);font-size:13px;font-weight:700;color:${pnlColor};">${v.pnl>=0?'+':''}$${Math.abs(v.pnl).toFixed(0)}</span>
+            <span style="font-family:var(--mono);font-size:13px;font-weight:700;color:${pnlColor};">${v.pnl>0?'+':v.pnl<0?'-':''}$${Math.abs(v.pnl).toFixed(0)}</span>
           </div>
           <div style="display:flex;gap:10px;font-size:12px;color:var(--text3);">
             <span>${v.count} trades</span>
