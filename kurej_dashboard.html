@@ -2098,14 +2098,20 @@ function calcStats(trades){
   const bestTrade = trades.reduce((best,t)=> signedPnl(t) > (best? signedPnl(best):-Infinity) ? t : best, null);
   // Expectancy per trade ($) = win% x avg win - loss% x avg loss  (break-evens count as 0)
   const expectancy = trades.length ? (winRate/100*avgWin - lossRate/100*avgLoss) : 0;
-  // Avg R Multiple = Avg Profit ÷ Avg Loss (how many R the average winner pays vs the average loser)
-  const avgR = (avgWin > 0 && avgLoss > 0) ? avgWin/avgLoss : 0;
-  // Per-trade R (only trades where you entered Risk $): P&L ÷ Risk $, averaged
-  let rSum = 0, rCount = 0;
-  trades.forEach(t=>{ const risk=+t.riskDollar; if(risk>0){ rSum += signedPnl(t)/risk; rCount++; } });
-  const avgRtrade = rCount ? rSum/rCount : null;
+  // ── R-multiples (standard definition) ──
+  // R for one trade = net P&L ÷ initial risk ($ you stood to lose at the stop).
+  // Avg R (= expectancy in R) is the mean of every trade's R. Only trades with a Risk $ can be measured.
+  const rList = [];
+  trades.forEach(t=>{ const risk=+t.riskDollar; if(risk>0) rList.push({r:signedPnl(t)/risk, res:t.result}); });
+  const rCount = rList.length;
+  const sumR = rList.reduce((x,o)=>x+o.r,0);
+  const avgR = rCount ? sumR/rCount : null;                       // average R multiple per trade
+  const rWins = rList.filter(o=>o.res==='Win'), rLoss = rList.filter(o=>o.res==='Loss');
+  const avgWinR = rWins.length ? rWins.reduce((x,o)=>x+o.r,0)/rWins.length : null;
+  const avgLossR = rLoss.length ? rLoss.reduce((x,o)=>x+o.r,0)/rLoss.length : null;   // negative number
+  const avgRtrade = avgR;                                         // (kept for older code paths)
   const rFallback = 0;
-  return {wins,losses,totalPnl,winPnl,lossPnl,winRate,profitFactor,avgWin,avgLoss,bestTrade,expectancy,avgR,avgRtrade,rCount,rFallback,count:trades.length};
+  return {wins,losses,totalPnl,winPnl,lossPnl,winRate,profitFactor,avgWin,avgLoss,bestTrade,expectancy,avgR,avgRtrade,sumR,avgWinR,avgLossR,rCount,rFallback,count:trades.length};
 }
 
 function fmt(n,prefix='$'){
@@ -2226,12 +2232,13 @@ function renderKPIs(st){
     {label:'Win Rate',val:`${st.winRate.toFixed(1)}%`,cls:st.winRate>=50?'green':st.winRate>=40?'gold':'red',sub:`${st.wins.length}W / ${st.losses.length}L`},
     {label:'Profit Factor',val:`${st.profitFactor}`,cls:typeof st.profitFactor==='number'&&st.profitFactor>=1.5?'green':st.profitFactor>=1?'gold':'red',sub:''},
     (()=>{
-      const ok = st.avgWin>0 && st.avgLoss>0;
-      const dec = Math.min(st.avgWin||0,st.avgLoss||0)<100 ? 2 : 0;
-      const money = n => '$'+n.toLocaleString('en-US',{minimumFractionDigits:dec,maximumFractionDigits:dec});
-      let sub = ok ? `${money(st.avgWin)} avg win ÷ ${money(st.avgLoss)} avg loss` : (st.avgWin>0 ? 'No losing trades yet' : st.avgLoss>0 ? 'No winning trades yet' : 'Log a win and a loss');
-      if(ok && st.avgRtrade!==null) sub += ` · per-trade avg ${st.avgRtrade>=0?'+':''}${st.avgRtrade.toFixed(2)}R (${st.rCount} w/ Risk $)`;
-      return {label:'Avg R Multiple',val: ok ? `${st.avgR.toFixed(2)}R` : '—', cls: ok ? (st.expectancy>=0?'green':'red') : '', sub};
+      const sg = n => (n>=0?'+':'')+n.toFixed(2);
+      if(st.avgR===null) return {label:'Avg R Multiple',val:'—',cls:'',sub: st.count ? 'Enter Risk $ on your trades to calculate R' : 'Log trades with Risk $ to calculate R'};
+      const parts = [`Total ${sg(st.sumR)}R`];
+      if(st.avgWinR!==null) parts.push(`Wins ${sg(st.avgWinR)}R`);
+      if(st.avgLossR!==null) parts.push(`Losses ${sg(st.avgLossR)}R`);
+      parts.push(`${st.rCount}/${st.count} trades with Risk $`);
+      return {label:'Avg R Multiple',val:`${sg(st.avgR)}R`,cls:st.avgR>=0?'green':'red',sub:parts.join(' · ')};
     })(),
     {label:'Avg Profit / Avg Loss',cls:'',small:true,
       html:`<span class="green">+$${st.avgWin.toFixed(Math.min(st.avgWin,st.avgLoss||st.avgWin)<100?2:0)}</span><span style="color:var(--text3)"> / </span><span class="red">-$${st.avgLoss.toFixed(Math.min(st.avgWin||st.avgLoss,st.avgLoss)<100?2:0)}</span>`,
